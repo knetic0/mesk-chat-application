@@ -1,9 +1,11 @@
 using MESK.MediatR;
+using MeskChatApplication.Application.Attributes;
 using MeskChatApplication.Application.Exceptions;
 using MeskChatApplication.Application.Services;
 
 namespace MeskChatApplication.Application.Features.Commands.User.UpdateUserStatus;
 
+[Transactional]
 public sealed class UpdateUserStatusCommandHandler(IUserService userService) : IRequestHandler<UpdateUserStatusCommand>
 {
     private readonly IUserService _userService = userService;

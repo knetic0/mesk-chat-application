@@ -1,9 +1,11 @@
 using MESK.MediatR;
+using MeskChatApplication.Application.Attributes;
 using MeskChatApplication.Application.Services;
 using MeskChatApplication.Domain.Entities;
 
 namespace MeskChatApplication.Application.Features.Commands.Messages.MarkAsRead;
 
+[Transactional]
 public sealed class MarkAsReadCommandHandler(IMessageService messageService) : IRequestHandler<MarkAsReadCommand, Message>
 {
     private readonly IMessageService _messageService = messageService;

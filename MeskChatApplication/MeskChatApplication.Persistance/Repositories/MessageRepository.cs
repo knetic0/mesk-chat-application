@@ -14,6 +14,8 @@ public sealed class MessageRepository(ApplicationDatabaseContext context) : IMes
         CancellationToken cancellationToken = default)
     {
         return await _context.Set<Message>()
+            .Include(m => m.Sender)
+            .Include(m => m.Receiver)
             .Where(predicate)
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -23,6 +25,8 @@ public sealed class MessageRepository(ApplicationDatabaseContext context) : IMes
     {
         return await _context.Set<Message>()
             .AsNoTracking()
+            .Include(m => m.Sender)
+            .Include(m => m.Receiver)
             .Where(predicate)
             .OrderBy(x => x.SendAt)
             .ToListAsync(cancellationToken);

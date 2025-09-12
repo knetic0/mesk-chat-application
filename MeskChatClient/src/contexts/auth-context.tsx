@@ -21,9 +21,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
     const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem("refreshToken"));
 
-    const { data } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
-
-    const [user, _] = useState<ApplicationUser | null>(data?.data || null);
+    const { data: user } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
 
     const login = (accessToken: string, refreshToken: string) => {
         setAccessToken(accessToken);
@@ -42,7 +40,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const isAuthenticated = !!accessToken && !!refreshToken;
 
     const value: AuthContextType = {
-        user,
+        user: user?.data || null,
         accessToken,
         refreshToken,
         isAuthenticated,

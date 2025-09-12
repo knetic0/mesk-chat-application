@@ -29,32 +29,37 @@ function RouteComponent() {
   });
 
   const currentUserId = user?.id;
-
+  
   useEffect(() => {
     const start = async () => {
-      if (connection.state === "Disconnected") {
-        try {
-          await connection.start();
-          console.log("✅ SignalR connected");
-        } catch (err) {
-          console.error("❌ SignalR connect error:", err);
-        }
+      if (connection.state !== "Disconnected") return;
+      try {
+        await connection.start();
+        console.log("SignalR connected ✅");
+
+        connection.on("ReceiveMessage", (message: Message) => {
+          if(message.senderId === receiverId || message.receiverId === receiverId)
+            setLiveMessages((prev) => [...prev, message]);
+        });
+
+        connection.on("SentMessage", (message: Message) => {
+          if(message.senderId === receiverId || message.receiverId === receiverId)
+            setLiveMessages((prev) => [...prev, message]);
+        });
+
+      } catch (err) {
+        console.error("SignalR connection error:", err);
       }
     };
 
     start();
 
-    connection.on("ReceiveMessage", (msg: Message) => {
-      if (msg.senderId === receiverId || msg.receiverId === receiverId) {
-        setLiveMessages((prev) => [...prev, msg]);
-      }
-    });
-
     return () => {
       connection.off("ReceiveMessage");
+      connection.off("SentMessage");
     };
-  }, [receiverId]);
-
+  }, []);
+  
   const send = () => {
     if (input.trim() && receiverId) {
       const payload = {
@@ -159,11 +164,6 @@ function RouteComponent() {
                         : "bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
                     }`}
                   >
-                    {!isMine && (
-                      <span className="absolute -top-5 left-0 text-xs text-gray-400 font-semibold">
-                        {msg.sender?.firstName ?? msg.senderId}
-                      </span>
-                    )}
                     <span className="block text-base">{msg.text}</span>
                   </div>
                 </div>
