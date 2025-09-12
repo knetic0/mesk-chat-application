@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeskChatApplication.Application", "MeskChatApplication.Application\MeskChatApplication.Application.csproj", "{7718069B-6F74-4580-A02F-76BEE2AB63E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeskChatApplication.Domain", "MeskChatApplication.Domain\MeskChatApplication.Domain.csproj", "{A8326AAF-E7FB-4F03-B2B8-1E66AB8DDA91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeskChatApplication.Presentation", "MeskChatApplication.Presentation\MeskChatApplication.Presentation.csproj", "{5BB188ED-F1A8-4508-A22B-2AD578954F12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeskChatApplication.Persistance", "MeskChatApplication.Persistance\MeskChatApplication.Persistance.csproj", "{4743E3B9-386F-4BD5-971D-48F3F62079B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeskChatApplication.Infrastructure", "MeskChatApplication.Infrastructure\MeskChatApplication.Infrastructure.csproj", "{3DD58F7A-0881-471C-AE33-F288C9C77BFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeskChatApplication.WebApi", "MeskChatApplication.WebApi\MeskChatApplication.WebApi.csproj", "{74B44E9B-ED9B-4907-9ACA-D25E9B1C008A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7718069B-6F74-4580-A02F-76BEE2AB63E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7718069B-6F74-4580-A02F-76BEE2AB63E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7718069B-6F74-4580-A02F-76BEE2AB63E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7718069B-6F74-4580-A02F-76BEE2AB63E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8326AAF-E7FB-4F03-B2B8-1E66AB8DDA91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8326AAF-E7FB-4F03-B2B8-1E66AB8DDA91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8326AAF-E7FB-4F03-B2B8-1E66AB8DDA91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8326AAF-E7FB-4F03-B2B8-1E66AB8DDA91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB188ED-F1A8-4508-A22B-2AD578954F12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB188ED-F1A8-4508-A22B-2AD578954F12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB188ED-F1A8-4508-A22B-2AD578954F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BB188ED-F1A8-4508-A22B-2AD578954F12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4743E3B9-386F-4BD5-971D-48F3F62079B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4743E3B9-386F-4BD5-971D-48F3F62079B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4743E3B9-386F-4BD5-971D-48F3F62079B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4743E3B9-386F-4BD5-971D-48F3F62079B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DD58F7A-0881-471C-AE33-F288C9C77BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DD58F7A-0881-471C-AE33-F288C9C77BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DD58F7A-0881-471C-AE33-F288C9C77BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DD58F7A-0881-471C-AE33-F288C9C77BFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74B44E9B-ED9B-4907-9ACA-D25E9B1C008A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74B44E9B-ED9B-4907-9ACA-D25E9B1C008A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74B44E9B-ED9B-4907-9ACA-D25E9B1C008A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74B44E9B-ED9B-4907-9ACA-D25E9B1C008A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

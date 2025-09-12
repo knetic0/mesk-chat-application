@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="8.4.0" />
+      <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
+      <PackageReference Include="FluentValidation" Version="12.0.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+      <PackageReference Include="MESK.MediatR" Version="1.0.8" />
+      <PackageReference Include="MESK.ResponseEntity" Version="1.0.3" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.8" />
+      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.4-beta1" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+      <PackageReference Include="Scalar.AspNetCore" Version="2.7.2" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MeskChatApplication.Application\MeskChatApplication.Application.csproj" />
+      <ProjectReference Include="..\MeskChatApplication.Infrastructure\MeskChatApplication.Infrastructure.csproj" />
+      <ProjectReference Include="..\MeskChatApplication.Persistance\MeskChatApplication.Persistance.csproj" />
+      <ProjectReference Include="..\MeskChatApplication.Presentation\MeskChatApplication.Presentation.csproj" />
+    </ItemGroup>
+
+</Project>

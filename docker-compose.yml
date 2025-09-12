@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  client:
+    build: ./MeskChatClient
+    container_name: meskchat_client
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+  
+  api:
+    build: ./MeskChatApplication
+    container_name: meskchat_api
+    ports:
+      - "5254:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=MeskChatDb;Username=postgres;Password=admin123;
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: meskchat_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: MeskChatDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+
