@@ -29,26 +29,20 @@ function RouteComponent() {
   });
 
   const currentUserId = user?.id;
+
+  const recieveMessageHandler = (message: Message) => {
+    if(message.senderId === receiverId || message.receiverId === receiverId)
+      setLiveMessages((prev) => [...prev, message]);
+  }
   
   useEffect(() => {
     const start = async () => {
-      if (connection.state !== "Disconnected") return;
-      try {
-        await connection.start();
-        console.log("SignalR connected ✅");
-
-        connection.on("ReceiveMessage", (message: Message) => {
-          if(message.senderId === receiverId || message.receiverId === receiverId)
-            setLiveMessages((prev) => [...prev, message]);
-        });
-
-        connection.on("SentMessage", (message: Message) => {
-          if(message.senderId === receiverId || message.receiverId === receiverId)
-            setLiveMessages((prev) => [...prev, message]);
-        });
-
-      } catch (err) {
-        console.error("SignalR connection error:", err);
+      if (connection.state === "Disconnected") {
+        await connection.start()
+          .then(() => {
+            connection.on("ReceiveMessage", recieveMessageHandler);
+            connection.on("SentMessage", recieveMessageHandler);
+          });
       }
     };
 

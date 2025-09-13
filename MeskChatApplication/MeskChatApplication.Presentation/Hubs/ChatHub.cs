@@ -23,7 +23,7 @@ public sealed class ChatHub(ISender sender) : Hub
         var userGuid = GetCurrentUserId();
         var connectionId = Context.ConnectionId;
         UserConnections.AddOrUpdate(userGuid,
-            new HashSet<string> { connectionId },
+            [connectionId],
             (_, connections) =>
             {
                 connections.Add(connectionId);
@@ -56,8 +56,10 @@ public sealed class ChatHub(ISender sender) : Hub
     {
         var senderGuid = GetCurrentUserId();
         var message = await _sender.Send(new SendMessageCommand(senderGuid, request.ReceiverId, request.Message));
-        if (!UserConnections.TryGetValue(request.ReceiverId, out var connections)) throw new UnauthorizedAccessException();
-        await Clients.Clients(connections).SendAsync("ReceiveMessage", message);
+        if (UserConnections.TryGetValue(request.ReceiverId, out var connections) && connections.Count > 0)
+        {
+            await Clients.Clients(connections).SendAsync("ReceiveMessage", message);
+        }
         await Clients.Caller.SendAsync("SentMessage", message);
     }
 

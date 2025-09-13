@@ -17,9 +17,9 @@ public sealed class UserService(IUserRepository userRepository) : IUserService
         return await _userRepository.GetAsync(predicate, cancellationToken);
     }
 
-    public async Task<List<ApplicationUser>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<ApplicationUser>> GetAllAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        var users = await _userRepository.GetAllAsync(cancellationToken);
+        var users = await _userRepository.GetAllAsync(predicate, cancellationToken);
         return users.Adapt<List<ApplicationUser>>();
     }
 

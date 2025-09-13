@@ -11,7 +11,7 @@ public sealed class GetAllUsersQueryHandler(IUserService userService) : IRequest
 
     public async Task<ResponseEntity<List<ApplicationUser>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
-        var users = await _userService.GetAllAsync(cancellationToken);
+        var users = await _userService.GetAllAsync(u => u.Id != request.CurrentUserId, cancellationToken);
         var responseEntity = ResponseEntity<List<ApplicationUser>>.Succeeded();
         return responseEntity.WithData(users);
     }

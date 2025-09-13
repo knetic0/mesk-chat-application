@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using Mapster;
 using MeskChatApplication.Domain.Entities;
 using MeskChatApplication.Domain.Repositories;
 using MeskChatApplication.Persistance.Context;
@@ -21,10 +20,11 @@ public sealed class UserRepository(ApplicationDatabaseContext context) : IUserRe
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<User>> GetAllAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken = default)
     {
         return await _context.Set<User>()
             .AsNoTracking()
+            .Where(predicate)
             .OrderBy(u => u.FirstName + " " + u.LastName)
             .ToListAsync(cancellationToken);
     }

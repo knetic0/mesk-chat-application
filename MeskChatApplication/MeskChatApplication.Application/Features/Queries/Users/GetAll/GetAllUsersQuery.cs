@@ -4,4 +4,4 @@ using MeskChatApplication.Domain.Dtos;
 
 namespace MeskChatApplication.Application.Features.Queries.Users.GetAll;
 
-public record GetAllUsersQuery() : IRequest<ResponseEntity<List<ApplicationUser>>>;
+public record GetAllUsersQuery(Guid CurrentUserId) : IRequest<ResponseEntity<List<ApplicationUser>>>;
