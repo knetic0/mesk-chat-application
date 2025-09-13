@@ -32,7 +32,11 @@ public sealed class ChatHub(ISender sender) : Hub
         if (UserConnections.TryGetValue(userGuid, out var userConnections) && userConnections.Count == 1)
         {
             var response = await _sender.Send(new UpdateUserStatusCommand(userGuid, Status.Online));
-            if(response.IsSuccess) await Clients.All.SendAsync("UserStatusChanged", userGuid, Status.Online);
+            if (response.IsSuccess)
+            {
+                var user = response.Data;
+                if (user is not null) await Clients.Others.SendAsync("UserStatusChanged", user);
+            }
         }
         await base.OnConnectedAsync();
     }
@@ -48,7 +52,11 @@ public sealed class ChatHub(ISender sender) : Hub
             {
                 UserConnections.TryRemove(userGuid, out _);
                 var response = await _sender.Send(new UpdateUserStatusCommand(userGuid, Status.Offline));
-                if(response.IsSuccess) await Clients.All.SendAsync("UserStatusChanged", userGuid, Status.Offline);
+                if (response.IsSuccess)
+                {
+                    var user = response.Data;
+                    if(user is not null) await Clients.Others.SendAsync("UserStatusChanged", user);
+                }
             }
         }
         await base.OnDisconnectedAsync(exception);

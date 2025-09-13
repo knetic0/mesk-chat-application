@@ -5,4 +5,4 @@ using MeskChatApplication.Domain.Enums;
 
 namespace MeskChatApplication.Application.Features.Commands.User.UpdateUserStatus;
 
-public record UpdateUserStatusCommand(Guid UserId, Status Status) : IRequest<ResponseEntity<EmptyResponse>>;
+public record UpdateUserStatusCommand(Guid UserId, Status Status) : IRequest<ResponseEntity<ApplicationUser>>;

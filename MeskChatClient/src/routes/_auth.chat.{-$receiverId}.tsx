@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react";
 import { Search, Send, MoreVertical } from "lucide-react";
 import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
-import type { ApplicationUser, Message, ResponseEntityOfListOfApplicationUser } from "@/types";
+import type { ApplicationUser, ApplicationUser2, Message, ResponseEntityOfListOfApplicationUser } from "@/types";
 import { useGetMessagesQuery } from "@/features/queries/chat/get-messages/handler";
 import { useAuth } from "@/hooks/use-auth";
 import { connection } from "@/signalr";
@@ -43,17 +43,23 @@ function RouteComponent() {
       setLiveMessages((prev) => [...prev, message]);
   }
 
-  const statusChangeHandler = (userId: string, status: number) => {
-    queryClient.setQueryData(["users"], (oldData: ResponseEntityOfListOfApplicationUser) => {
-      if (!oldData) return oldData;
-      return {
-        ...oldData,
-        data: oldData.data?.map((u: ApplicationUser) =>
-          u?.id === userId ? { ...u, status } : u
-        ),
-      };
-    });
-  }
+  const statusChangeHandler = (applicationUser: ApplicationUser2) => {
+    queryClient.setQueryData(
+      ["users"],
+      (oldData: ResponseEntityOfListOfApplicationUser | undefined) => {
+        if (!oldData) return oldData;
+        const exists = oldData.data?.some((u: ApplicationUser2) => u.id === applicationUser.id);
+        return {
+          ...oldData,
+          data: exists
+            ? oldData.data?.map((u: ApplicationUser2) =>
+                u.id === applicationUser.id ? { ...u, status: applicationUser.status } : u
+              )
+            : [...(oldData.data ?? []), applicationUser],
+        };
+      }
+    );
+  };
   
   useEffect(() => {
     const start = async () => {
