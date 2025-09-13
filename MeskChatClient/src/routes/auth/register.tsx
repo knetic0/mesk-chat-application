@@ -1,3 +1,4 @@
+import MESKButton from '@/components/mesk-button';
 import Password from '@/components/password';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +11,7 @@ import { router } from '@/router';
 import type { ResponseEntityOfEmptyResponse } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createFileRoute } from '@tanstack/react-router'
-import { ArrowRight, Loader2, Lock, Mail } from 'lucide-react';
+import { ArrowRight, Lock, Mail } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/auth/register')({
@@ -57,7 +58,6 @@ function RouteComponent() {
   return (
     <>
       <div className="w-full max-w-md">
-        {/* Logo/Brand Section */}
         <div className="text-center mb-8">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Lock className="w-8 h-8 text-white" />
@@ -65,8 +65,6 @@ function RouteComponent() {
           <h1 className="text-3xl font-bold mb-2">{t("welcome")}</h1>
           <p className="">{t("register.title")}</p>
         </div>
-
-        {/* Login Form */}
         <Card className="shadow-xl">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center">{t("register.title")}</CardTitle>
@@ -74,7 +72,6 @@ function RouteComponent() {
               {t("register.description")}
             </CardDescription>
           </CardHeader>
-          
           <CardContent className="space-y-4">
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-2">
@@ -92,7 +89,6 @@ function RouteComponent() {
                 </div>
                 {errors.firstName && <p className="text-sm text-red-600 mt-1">{errors.firstName.message}</p>}
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="lastName">{t("lastName")}</Label>
                 <div className="relative">
@@ -108,7 +104,6 @@ function RouteComponent() {
                 </div>
                 {errors.lastName && <p className="text-sm text-red-600 mt-1">{errors.lastName.message}</p>}
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="username">{t("username")}</Label>
                 <div className="relative">
@@ -124,7 +119,6 @@ function RouteComponent() {
                 </div>
                 {errors.username && <p className="text-sm text-red-600 mt-1">{errors.username.message}</p>}
               </div>
-              {/* Email Field */}
               <div className="space-y-2">
                 <Label htmlFor="email">{t("email")}</Label>
                 <div className="relative">
@@ -140,34 +134,14 @@ function RouteComponent() {
                 </div>
                 {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>}
               </div>
-
-              {/* Password Field */}
               <div className="space-y-2">
                 <Label htmlFor="password">{t("password")}</Label>
                 <Password {...register("password")} />
                 {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>}
               </div>
-
-              {/* Login Button */}
-              <Button
-                disabled={isPending}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t("register.loading")}
-                  </>
-                ) : (
-                  <>
-                    {t("register.submit")}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
+              <MESKButton label={t("register.submit")} loading={isPending} loadingText={t("register.loading")} icon={<ArrowRight />} />
             </form>
           </CardContent>
-
           <CardFooter>
             <p className="px-8 text-center text-sm text-muted-foreground">
               {t("register.haveAccount")}{" "}
