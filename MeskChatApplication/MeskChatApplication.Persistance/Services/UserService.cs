@@ -33,13 +33,13 @@ public sealed class UserService(IUserRepository userRepository) : IUserService
         _userRepository.Update(user);
     }
 
-    public void UpdatePasswordAsync(User user, byte[] passwordHash, byte[] passwordSalt)
+    public void UpdatePassword(User user, byte[] passwordHash, byte[] passwordSalt)
     {
         user.ChangePassword(passwordHash, passwordSalt);
         Update(user);
     }
 
-    public void UpdateUserStatusAsync(User user, Status status)
+    public void UpdateUserStatus(User user, Status status)
     {
         user.SetStatus(status);
         Update(user);

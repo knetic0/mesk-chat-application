@@ -1,5 +1,6 @@
 import { useLogoutMutation } from "@/features/commands/auth/logout/handler";
 import { useGetCurrentUserQuery } from "@/features/queries/auth/me/handler";
+import { connection } from "@/signalr";
 import type { ApplicationUser, ResponseEntityOfEmptyResponse } from "@/types";
 import { createContext, useState } from "react";
 
@@ -29,6 +30,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setRefreshToken(null);
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
+                connection.stop();
                 window.location.href = "/auth/login";
             }
         }

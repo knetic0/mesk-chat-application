@@ -90,7 +90,7 @@ public sealed class AuthenticationService(IJwtService jwtService, IUserService u
         var resetPasswordToken = await _passwordResetTokenService.GetAsync(r => r.Token == command.Token, cancellationToken);
         if (resetPasswordToken is null) throw new UnauthorizedAccessException();
         HashPassword(command.NewPassword, out var hashed, out var salt);
-        _userService.UpdatePasswordAsync(resetPasswordToken.User, hashed, salt);
+        _userService.UpdatePassword(resetPasswordToken.User, hashed, salt);
         _passwordResetTokenService.MarkAsUsed(resetPasswordToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

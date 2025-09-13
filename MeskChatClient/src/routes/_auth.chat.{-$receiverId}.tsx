@@ -9,6 +9,10 @@ import { connection } from "@/signalr";
 import { useLanguage } from "@/hooks/use-language";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
+
+const STATUS_TEXT_MAP: Record<number, string> = { 0: "Çevrimiçi", 2: "Çevrimdışı" };
+const STATUS_COLOR_MAP: Record<number, string> = { 0: "bg-green-500", 2: "bg-gray-500" };
 
 export const Route = createFileRoute("/_auth/chat/{-$receiverId}")({
   component: RouteComponent,
@@ -18,6 +22,7 @@ function RouteComponent() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { user, logout } = useAuth();
+  const queryClient = useQueryClient();
   const { receiverId } = useParams({ from: "/_auth/chat/{-$receiverId}" });
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -27,15 +32,25 @@ function RouteComponent() {
 
   const [liveMessages, setLiveMessages] = useState<Message[]>([]);
 
-  const { data: messages } = useGetMessagesQuery(receiverId, {
-    enabled: !!receiverId,
-  });
+  const { data: messages } = useGetMessagesQuery(receiverId, { enabled: !!receiverId });
 
   const currentUserId = user?.id;
 
   const recieveMessageHandler = (message: Message) => {
     if(message.senderId === receiverId || message.receiverId === receiverId)
       setLiveMessages((prev) => [...prev, message]);
+  }
+
+  const statusChangeHandler = (userId: string, status: number) => {
+    queryClient.setQueryData(["users"], (oldData: any) => {
+      if (!oldData) return oldData;
+      return {
+        ...oldData,
+        data: oldData.data.map((u: ApplicationUser) =>
+          u?.id === userId ? { ...u, status } : u
+        ),
+      };
+    });
   }
   
   useEffect(() => {
@@ -45,6 +60,7 @@ function RouteComponent() {
           .then(() => {
             connection.on("ReceiveMessage", recieveMessageHandler);
             connection.on("SentMessage", recieveMessageHandler);
+            connection.on("UserStatusChanged", statusChangeHandler);
           });
       }
     };
@@ -54,6 +70,8 @@ function RouteComponent() {
     return () => {
       connection.off("ReceiveMessage");
       connection.off("SentMessage");
+      connection.off("UserStatusChanged");
+      window.removeEventListener("beforeunload", () => connection.stop());
     };
   }, []);
   
@@ -115,7 +133,12 @@ function RouteComponent() {
                 <div className="font-medium text-base">
                   {user?.firstName + " " + user?.lastName}
                 </div>
-                <div className="text-xs text-gray-400">{user?.status}</div>
+                {(user && user?.status !== undefined) && (
+                  <div className="flex gap-1 items-center">
+                    <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[user.status]}`}></div>
+                    <div className="text-xs text-gray-400">{STATUS_TEXT_MAP[user.status]}</div>
+                  </div>
+                )}
               </div>
             </li>
           ))}
@@ -168,9 +191,12 @@ function RouteComponent() {
                 ? `${selectedUser?.firstName} ${selectedUser?.lastName}`
                 : "Sohbet"}
             </div>
-            <div className="text-xs text-gray-400">
-              {receiverId ? "Çevrimiçi" : "Kullanıcı seçilmedi"}
-            </div>
+            {(selectedUser && selectedUser?.status !== undefined) && (
+              <div className="flex gap-1 items-center">
+                <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[selectedUser.status]}`}></div>
+                <div className="text-xs text-gray-400">{STATUS_TEXT_MAP[selectedUser.status]}</div>
+              </div>
+            )}
           </div>
           <MoreVertical className="text-gray-400 w-5 h-5" />
         </div>

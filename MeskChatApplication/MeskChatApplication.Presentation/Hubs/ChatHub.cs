@@ -29,9 +29,10 @@ public sealed class ChatHub(ISender sender) : Hub
                 connections.Add(connectionId);
                 return connections;
             });
-        if (UserConnections[userGuid].Count == 1)
+        if (UserConnections.TryGetValue(userGuid, out var userConnections) && userConnections.Count == 1)
         {
-            await _sender.Send(new UpdateUserStatusCommand(userGuid, Status.Online));
+            var response = await _sender.Send(new UpdateUserStatusCommand(userGuid, Status.Online));
+            if(response.IsSuccess) await Clients.All.SendAsync("UserStatusChanged", userGuid, Status.Online);
         }
         await base.OnConnectedAsync();
     }
@@ -46,7 +47,8 @@ public sealed class ChatHub(ISender sender) : Hub
             if (connections.Count == 0)
             {
                 UserConnections.TryRemove(userGuid, out _);
-                await _sender.Send(new UpdateUserStatusCommand(userGuid, Status.Offline));
+                var response = await _sender.Send(new UpdateUserStatusCommand(userGuid, Status.Offline));
+                if(response.IsSuccess) await Clients.All.SendAsync("UserStatusChanged", userGuid, Status.Offline);
             }
         }
         await base.OnDisconnectedAsync(exception);

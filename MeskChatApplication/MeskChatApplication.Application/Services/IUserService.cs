@@ -11,6 +11,6 @@ public interface IUserService
     Task<List<ApplicationUser>> GetAllAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken = default);
     Task CreateAsync(User user, CancellationToken cancellationToken = default);
     void Update(User user);
-    void UpdatePasswordAsync(User user, byte[] passwordHash, byte[] passwordSalt);
-    void UpdateUserStatusAsync(User user, Status status);
+    void UpdatePassword(User user, byte[] passwordHash, byte[] passwordSalt);
+    void UpdateUserStatus(User user, Status status);
 }
