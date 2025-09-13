@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react";
 import { Search, Send, MoreVertical } from "lucide-react";
 import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
-import type { ApplicationUser, Message } from "@/types";
+import type { ApplicationUser, Message, ResponseEntityOfListOfApplicationUser } from "@/types";
 import { useGetMessagesQuery } from "@/features/queries/chat/get-messages/handler";
 import { useAuth } from "@/hooks/use-auth";
 import { connection } from "@/signalr";
@@ -44,11 +44,11 @@ function RouteComponent() {
   }
 
   const statusChangeHandler = (userId: string, status: number) => {
-    queryClient.setQueryData(["users"], (oldData: any) => {
+    queryClient.setQueryData(["users"], (oldData: ResponseEntityOfListOfApplicationUser) => {
       if (!oldData) return oldData;
       return {
         ...oldData,
-        data: oldData.data.map((u: ApplicationUser) =>
+        data: oldData.data?.map((u: ApplicationUser) =>
           u?.id === userId ? { ...u, status } : u
         ),
       };
