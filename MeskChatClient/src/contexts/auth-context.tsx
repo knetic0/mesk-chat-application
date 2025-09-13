@@ -1,5 +1,6 @@
+import { useLogoutMutation } from "@/features/commands/auth/logout/handler";
 import { useGetCurrentUserQuery } from "@/features/queries/auth/me/handler";
-import type { ApplicationUser } from "@/types";
+import type { ApplicationUser, ResponseEntityOfEmptyResponse } from "@/types";
 import { createContext, useState } from "react";
 
 export interface AuthContextType {
@@ -21,6 +22,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
     const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem("refreshToken"));
 
+    const { mutate: logoutMutation } = useLogoutMutation({
+        onSuccess: (data: ResponseEntityOfEmptyResponse) => {
+            if(data.isSuccess) {
+                setAccessToken(null);
+                setRefreshToken(null);
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
+                window.location.href = "/auth/login";
+            }
+        }
+    })
     const { data: user } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
 
     const login = (accessToken: string, refreshToken: string) => {
@@ -30,12 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem("refreshToken", refreshToken);
     }
 
-    const logout = () => {
-        setAccessToken(null);
-        setRefreshToken(null);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-    }
+    const logout = () => logoutMutation({ refreshToken: refreshToken! });
 
     const isAuthenticated = !!accessToken && !!refreshToken;
 

@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_auth/chat/{-$receiverId}")({
 function RouteComponent() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { receiverId } = useParams({ from: "/_auth/chat/{-$receiverId}" });
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -86,7 +86,7 @@ function RouteComponent() {
         <div className="p-2">
           <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg px-2 py-1 shadow-sm">
             <Search className="text-gray-400 mr-2 w-4 h-4" />
-            <input
+            <Input
               className="bg-transparent outline-none w-full text-sm"
               placeholder="Kullanıcı ara..."
             />
@@ -120,6 +120,33 @@ function RouteComponent() {
             </li>
           ))}
         </ul>
+        {user && (
+          <div className="p-4 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img
+                src={"https://randomuser.me/api/portraits/men/5.jpg"}
+                alt={user?.id}
+                className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-slate-700"
+              />
+              <div>
+                <div className="font-medium text-base">
+                  {user.firstName} {user.lastName}
+                </div>
+                <div className="text-xs text-gray-400">Ben</div>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-2"
+              onClick={() => {
+                logout();
+              }}
+            >
+              Çıkış
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Chat Panel */}
