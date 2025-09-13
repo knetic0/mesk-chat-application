@@ -23,9 +23,11 @@ function RouteComponent() {
   const { t } = useLanguage();
   const { user, logout } = useAuth();
   const queryClient = useQueryClient();
-  const { receiverId } = useParams({ from: "/_auth/chat/{-$receiverId}" });
+  const params = useParams({ from: "/_auth/chat/{-$receiverId}" });
+  const receiverId = params.receiverId;
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const receiverIdRef = useRef<string | null>(receiverId);
 
   const { data: users } = useGetUsersQuery();
   const selectedUser = users?.data?.find((u: ApplicationUser) => u?.id === receiverId);
@@ -37,7 +39,7 @@ function RouteComponent() {
   const currentUserId = user?.id;
 
   const recieveMessageHandler = (message: Message) => {
-    if(message.senderId === receiverId || message.receiverId === receiverId)
+    if(message.senderId === receiverIdRef?.current || message.receiverId === receiverIdRef?.current)
       setLiveMessages((prev) => [...prev, message]);
   }
 
@@ -93,6 +95,10 @@ function RouteComponent() {
 
   useEffect(() => scrollToBottom(), [allMessages]);
 
+  useEffect(() => {
+    receiverIdRef.current = receiverId;
+  }, [receiverId]);
+
   return (
     <div className="w-full h-[650px] max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
       {/* Sidebar */}
@@ -111,32 +117,32 @@ function RouteComponent() {
           </div>
         </div>
         <ul className="flex-1 overflow-y-auto mt-2">
-          {users?.data?.map((user: ApplicationUser) => (
+          {users?.data?.map((item: ApplicationUser) => (
             <li
-              key={user?.id}
+              key={item?.id}
               className={`cursor-pointer flex items-center gap-3 px-4 py-3 hover:bg-blue-100 dark:hover:bg-slate-800 transition-all ${
-                receiverId === user?.id ? "bg-blue-50 dark:bg-slate-800" : ""
+                receiverId === item?.id ? "bg-blue-50 dark:bg-slate-800" : ""
               }`}
               onClick={() =>
                 navigate({
                   to: "/chat/{-$receiverId}",
-                  params: { receiverId: user?.id! },
+                  params: { receiverId: item?.id! },
                 })
               }
             >
               <img
                 src={"https://randomuser.me/api/portraits/men/3.jpg"}
-                alt={user?.id}
+                alt={item?.id}
                 className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-slate-700"
               />
               <div>
                 <div className="font-medium text-base">
-                  {user?.firstName + " " + user?.lastName}
+                  {item?.firstName + " " + item?.lastName}
                 </div>
-                {(user && user?.status !== undefined) && (
+                {(item && item?.status !== undefined) && (
                   <div className="flex gap-1 items-center">
-                    <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[user.status]}`}></div>
-                    <div className="text-xs text-gray-400">{STATUS_TEXT_MAP[user.status]}</div>
+                    <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[item.status]}`}></div>
+                    <div className="text-xs text-gray-400">{STATUS_TEXT_MAP[item.status]}</div>
                   </div>
                 )}
               </div>
