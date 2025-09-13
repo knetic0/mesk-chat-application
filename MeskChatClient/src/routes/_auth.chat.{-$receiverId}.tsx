@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, Send, MoreVertical } from "lucide-react";
 import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
 import type { ApplicationUser, Message } from "@/types";
@@ -7,6 +7,8 @@ import { useGetMessagesQuery } from "@/features/queries/chat/get-messages/handle
 import { useAuth } from "@/hooks/use-auth";
 import { connection } from "@/signalr";
 import { useLanguage } from "@/hooks/use-language";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_auth/chat/{-$receiverId}")({
   component: RouteComponent,
@@ -18,6 +20,7 @@ function RouteComponent() {
   const { user } = useAuth();
   const { receiverId } = useParams({ from: "/_auth/chat/{-$receiverId}" });
   const [input, setInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const { data: users } = useGetUsersQuery();
   const selectedUser = users?.data?.find((u: ApplicationUser) => u?.id === receiverId);
@@ -67,6 +70,10 @@ function RouteComponent() {
   }
 
   const allMessages = messages?.data ? [...messages.data, ...liveMessages] : liveMessages;
+
+  const scrollToBottom = () => messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+
+  useEffect(() => scrollToBottom(), [allMessages]);
 
   return (
     <div className="w-full h-[650px] max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
@@ -168,6 +175,7 @@ function RouteComponent() {
               Bir kullanıcı seçiniz ve sohbet başlatınız.
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input */}
@@ -180,20 +188,20 @@ function RouteComponent() {
                 send();
               }}
             >
-              <input
+              <Input
                 className="flex-1 px-4 py-3 rounded-full border border-gray-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:bg-slate-800 dark:text-white text-base shadow-sm"
                 type="text"
                 placeholder="Mesaj yaz..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
               />
-              <button
+              <Button
                 type="submit"
                 className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 flex items-center justify-center shadow-md"
                 title="Gönder"
               >
                 <Send className="w-5 h-5" />
-              </button>
+              </Button>
             </form>
           ) : null}
         </div>
