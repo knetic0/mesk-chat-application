@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react";
 import { Search, Send, MoreVertical } from "lucide-react";
 import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
-import type { ApplicationUser, ApplicationUser2, Message, ResponseEntityOfListOfApplicationUser } from "@/types";
+import type { ApplicationUser, ApplicationUser2, Message, ResponseEntityOfListOfApplicationUser, ResponseEntityOfListOfMessage } from "@/types";
 import { useGetMessagesQuery } from "@/features/queries/chat/get-messages/handler";
 import { useAuth } from "@/hooks/use-auth";
 import { connection } from "@/signalr";
@@ -32,28 +32,35 @@ function RouteComponent() {
   const { data: users } = useGetUsersQuery();
   const selectedUser = users?.data?.find((u: ApplicationUser) => u?.id === receiverIdRef.current);
 
-  const [liveMessages, setLiveMessages] = useState<Record<string, Message[]>>({});
-
   const { data: messages } = useGetMessagesQuery(receiverId, { enabled: !!receiverId });
 
   const currentUserId = user?.id;
 
   const recieveMessageHandler = (message: Message) => {
-    const { senderId } = message;
-    if(!senderId) return;
-    setLiveMessages((prev) => ({
-      ...prev,
-      [senderId]: [...(prev[senderId] ?? []), message],
-    }));
+    if (message.senderId !== receiverIdRef.current && message.receiverId !== receiverIdRef.current) return;
+    queryClient.setQueryData(
+      ["messages", receiverIdRef.current],
+      (oldData: ResponseEntityOfListOfMessage | undefined) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: [...(oldData.data ?? []), message],
+        };
+      }
+    );
   }
 
   const sentMessageHandler = (message: Message) => {
-    const { receiverId } = message;
-    if(!receiverId) return;
-    setLiveMessages((prev) => ({
-      ...prev,
-      [receiverId]: [...(prev[receiverId] ?? []), message],
-    }));
+    queryClient.setQueryData(
+      ["messages", receiverIdRef.current],
+      (oldData: ResponseEntityOfListOfMessage | undefined) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: [...(oldData.data ?? []), message],
+        };
+      }
+    );
   }
 
   const statusChangeHandler = (applicationUser: ApplicationUser2) => {
@@ -108,14 +115,9 @@ function RouteComponent() {
       }
   }
 
-  const allMessages = [
-    ...(messages?.data ?? []),
-    ...(liveMessages[receiverIdRef.current ?? ""] ?? []),
-  ];
-
   const scrollToBottom = () => messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
 
-  useEffect(() => scrollToBottom(), [allMessages]);
+  useEffect(() => scrollToBottom(), [messages]);
 
   useEffect(() => {
     receiverIdRef.current = receiverId;
@@ -232,7 +234,7 @@ function RouteComponent() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-3">
           {receiverId ? (
-            allMessages.map((msg: Message, idx: number) => {
+            messages?.data?.map((msg: Message, idx: number) => {
               const isMine = msg.senderId === currentUserId;
               return (
                 <div
