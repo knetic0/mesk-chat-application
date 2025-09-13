@@ -39,12 +39,20 @@ function RouteComponent() {
   const currentUserId = user?.id;
 
   const recieveMessageHandler = (message: Message) => {
-    const { receiverId, senderId } = message;
-    if(!receiverId || !senderId) return;
+    const { senderId } = message;
+    if(!senderId) return;
+    setLiveMessages((prev) => ({
+      ...prev,
+      [senderId]: [...(prev[senderId] ?? []), message],
+    }));
+  }
+
+  const sentMessageHandler = (message: Message) => {
+    const { receiverId } = message;
+    if(!receiverId) return;
     setLiveMessages((prev) => ({
       ...prev,
       [receiverId]: [...(prev[receiverId] ?? []), message],
-      [senderId]: [...(prev[senderId] ?? []), message],
     }));
   }
 
@@ -72,7 +80,7 @@ function RouteComponent() {
         await connection.start()
           .then(() => {
             connection.on("ReceiveMessage", recieveMessageHandler);
-            connection.on("SentMessage", recieveMessageHandler);
+            connection.on("SentMessage", sentMessageHandler);
             connection.on("UserStatusChanged", statusChangeHandler);
           });
       }
