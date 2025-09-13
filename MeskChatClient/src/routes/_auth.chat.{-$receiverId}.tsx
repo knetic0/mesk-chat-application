@@ -30,17 +30,22 @@ function RouteComponent() {
   const receiverIdRef = useRef<string | null>(receiverId);
 
   const { data: users } = useGetUsersQuery();
-  const selectedUser = users?.data?.find((u: ApplicationUser) => u?.id === receiverId);
+  const selectedUser = users?.data?.find((u: ApplicationUser) => u?.id === receiverIdRef.current);
 
-  const [liveMessages, setLiveMessages] = useState<Message[]>([]);
+  const [liveMessages, setLiveMessages] = useState<Record<string, Message[]>>({});
 
   const { data: messages } = useGetMessagesQuery(receiverId, { enabled: !!receiverId });
 
   const currentUserId = user?.id;
 
   const recieveMessageHandler = (message: Message) => {
-    if(message.senderId === receiverIdRef?.current || message.receiverId === receiverIdRef?.current)
-      setLiveMessages((prev) => [...prev, message]);
+    const { receiverId, senderId } = message;
+    if(!receiverId || !senderId) return;
+    setLiveMessages((prev) => ({
+      ...prev,
+      [receiverId]: [...(prev[receiverId] ?? []), message],
+      [senderId]: [...(prev[senderId] ?? []), message],
+    }));
   }
 
   const statusChangeHandler = (applicationUser: ApplicationUser2) => {
@@ -95,7 +100,10 @@ function RouteComponent() {
       }
   }
 
-  const allMessages = messages?.data ? [...messages.data, ...liveMessages] : liveMessages;
+  const allMessages = [
+    ...(messages?.data ?? []),
+    ...(liveMessages[receiverIdRef.current ?? ""] ?? []),
+  ];
 
   const scrollToBottom = () => messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
 
