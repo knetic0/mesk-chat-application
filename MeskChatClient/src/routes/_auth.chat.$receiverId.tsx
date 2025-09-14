@@ -1,0 +1,109 @@
+import { createFileRoute, useParams } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { Send, MoreVertical } from "lucide-react";
+import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
+import type { ApplicationUser, Message } from "@/types";
+import { useGetMessagesQuery } from "@/features/queries/chat/get-messages/handler";
+import { connection } from "@/signalr";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
+
+const STATUS_TEXT_MAP: Record<number, string> = { 0: "Çevrimiçi", 2: "Çevrimdışı" };
+const STATUS_COLOR_MAP: Record<number, string> = { 0: "bg-green-500", 2: "bg-gray-500" };
+
+export const Route = createFileRoute("/_auth/chat/$receiverId")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
+  const { user } = useAuth();
+  const { receiverId } = useParams({ from: "/_auth/chat/$receiverId" });
+  const [input, setInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const { data: users } = useGetUsersQuery();
+  const selectedUser = users?.data?.find((u: ApplicationUser) => u?.id === receiverId);
+  const { data: messages } = useGetMessagesQuery(receiverId, { enabled: !!receiverId });
+
+  const send = () => {
+    if (input.trim() && receiverId) {
+      const payload = {
+        receiverId: receiverId,
+        message: input.trim(),
+      };
+      connection.invoke("SendMessageAsync", payload)
+        .then(() => setInput(""))
+        .catch(err => console.error("Send message error: ", err));
+      }
+  }
+
+  const scrollToBottom = () => messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => scrollToBottom(), [messages]);
+
+  return (
+    <>
+      <div className="flex items-center gap-3 p-4 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <img
+          src={"https://randomuser.me/api/portraits/men/3.jpg"}
+          alt="avatar"
+          className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-slate-700"
+        />
+        <div className="flex-1">
+          <div className="font-semibold text-lg">
+            {selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}` : "Sohbet"}
+          </div>
+          {selectedUser?.status !== undefined && (
+            <div className="flex gap-1 items-center">
+              <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[selectedUser.status]}`} />
+              <div className="text-xs text-gray-400">{STATUS_TEXT_MAP[selectedUser.status]}</div>
+            </div>
+          )}
+        </div>
+        <MoreVertical className="text-gray-400 w-5 h-5" />
+      </div>
+      <div className="flex-1 overflow-y-auto p-6 space-y-3">
+        {messages?.data?.map((msg: Message, idx: number) => {
+          const isMine = msg.senderId === user?.id;
+          return (
+            <div key={msg.id ?? idx} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+              <div
+                className={`relative px-5 py-3 rounded-2xl max-w-md shadow-sm ${
+                  isMine
+                    ? "bg-blue-600 text-white"
+                    : "bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+                }`}
+              >
+                <span className="block text-base">{msg.text}</span>
+              </div>
+            </div>
+          );
+        })}
+        <div ref={messagesEndRef} />
+      </div>
+      <div className="p-4 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <form
+          className="flex gap-2 items-center"
+          onSubmit={(e) => {
+            e.preventDefault();
+            send();
+          }}
+        >
+          <Input
+            className="flex-1 px-4 py-3 rounded-full border border-gray-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:bg-slate-800 dark:text-white text-base shadow-sm"
+            type="text"
+            placeholder="Mesaj yaz..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <Button
+            type="submit"
+            className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 flex items-center justify-center shadow-md"
+            title="Gönder"
+          >
+            <Send className="w-5 h-5" />
+          </Button>
+        </form>
+      </div>
+    </>
+  );
+}

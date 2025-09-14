@@ -14,7 +14,9 @@ import { Route as NotFoundRouteRouteImport } from './routes/not-found/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as AuthChatChar123ReceiverIdChar125RouteImport } from './routes/_auth.chat.{-$receiverId}'
+import { Route as AuthChatRouteRouteImport } from './routes/_auth.chat.route'
+import { Route as AuthChatIndexRouteImport } from './routes/_auth.chat.index'
+import { Route as AuthChatReceiverIdRouteImport } from './routes/_auth.chat.$receiverId'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -40,59 +42,78 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthChatChar123ReceiverIdChar125Route =
-  AuthChatChar123ReceiverIdChar125RouteImport.update({
-    id: '/chat/{-$receiverId}',
-    path: '/chat/{-$receiverId}',
-    getParentRoute: () => AuthRoute,
-  } as any)
+const AuthChatRouteRoute = AuthChatRouteRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthChatIndexRoute = AuthChatIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthChatRouteRoute,
+} as any)
+const AuthChatReceiverIdRoute = AuthChatReceiverIdRouteImport.update({
+  id: '/$receiverId',
+  path: '/$receiverId',
+  getParentRoute: () => AuthChatRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteRouteWithChildren
   '/not-found': typeof NotFoundRouteRoute
+  '/chat': typeof AuthChatRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/chat/{-$receiverId}': typeof AuthChatChar123ReceiverIdChar125Route
+  '/chat/$receiverId': typeof AuthChatReceiverIdRoute
+  '/chat/': typeof AuthChatIndexRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRouteRouteWithChildren
   '/not-found': typeof NotFoundRouteRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/chat/{-$receiverId}': typeof AuthChatChar123ReceiverIdChar125Route
+  '/chat/$receiverId': typeof AuthChatReceiverIdRoute
+  '/chat': typeof AuthChatIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/auth': typeof AuthRouteRouteWithChildren
   '/not-found': typeof NotFoundRouteRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/_auth/chat': typeof AuthChatRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/_auth/chat/{-$receiverId}': typeof AuthChatChar123ReceiverIdChar125Route
+  '/_auth/chat/$receiverId': typeof AuthChatReceiverIdRoute
+  '/_auth/chat/': typeof AuthChatIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth'
     | '/not-found'
+    | '/chat'
     | '/auth/login'
     | '/auth/register'
-    | '/chat/{-$receiverId}'
+    | '/chat/$receiverId'
+    | '/chat/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
     | '/not-found'
     | '/auth/login'
     | '/auth/register'
-    | '/chat/{-$receiverId}'
+    | '/chat/$receiverId'
+    | '/chat'
   id:
     | '__root__'
     | '/auth'
     | '/not-found'
     | '/_auth'
+    | '/_auth/chat'
     | '/auth/login'
     | '/auth/register'
-    | '/_auth/chat/{-$receiverId}'
+    | '/_auth/chat/$receiverId'
+    | '/_auth/chat/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -138,12 +159,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/chat/{-$receiverId}': {
-      id: '/_auth/chat/{-$receiverId}'
-      path: '/chat/{-$receiverId}'
-      fullPath: '/chat/{-$receiverId}'
-      preLoaderRoute: typeof AuthChatChar123ReceiverIdChar125RouteImport
+    '/_auth/chat': {
+      id: '/_auth/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof AuthChatRouteRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/_auth/chat/': {
+      id: '/_auth/chat/'
+      path: '/'
+      fullPath: '/chat/'
+      preLoaderRoute: typeof AuthChatIndexRouteImport
+      parentRoute: typeof AuthChatRouteRoute
+    }
+    '/_auth/chat/$receiverId': {
+      id: '/_auth/chat/$receiverId'
+      path: '/$receiverId'
+      fullPath: '/chat/$receiverId'
+      preLoaderRoute: typeof AuthChatReceiverIdRouteImport
+      parentRoute: typeof AuthChatRouteRoute
     }
   }
 }
@@ -162,12 +197,26 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface AuthChatRouteRouteChildren {
+  AuthChatReceiverIdRoute: typeof AuthChatReceiverIdRoute
+  AuthChatIndexRoute: typeof AuthChatIndexRoute
+}
+
+const AuthChatRouteRouteChildren: AuthChatRouteRouteChildren = {
+  AuthChatReceiverIdRoute: AuthChatReceiverIdRoute,
+  AuthChatIndexRoute: AuthChatIndexRoute,
+}
+
+const AuthChatRouteRouteWithChildren = AuthChatRouteRoute._addFileChildren(
+  AuthChatRouteRouteChildren,
+)
+
 interface AuthRouteChildren {
-  AuthChatChar123ReceiverIdChar125Route: typeof AuthChatChar123ReceiverIdChar125Route
+  AuthChatRouteRoute: typeof AuthChatRouteRouteWithChildren
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthChatChar123ReceiverIdChar125Route: AuthChatChar123ReceiverIdChar125Route,
+  AuthChatRouteRoute: AuthChatRouteRouteWithChildren,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
