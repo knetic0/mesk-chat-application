@@ -8,9 +8,7 @@ import { connection } from "@/signalr";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-
-const STATUS_TEXT_MAP: Record<number, string> = { 0: "Çevrimiçi", 2: "Çevrimdışı" };
-const STATUS_COLOR_MAP: Record<number, string> = { 0: "bg-green-500", 2: "bg-gray-500" };
+import { STATUS_TEXT_MAP, STATUS_COLOR_MAP } from "@/lib/status";
 
 export const Route = createFileRoute("/_auth/chat/$receiverId")({
   component: RouteComponent,
