@@ -25,6 +25,12 @@ function RouteComponent() {
   const selectedUser = users?.data?.find((u: ApplicationUser) => u?.id === receiverId);
   const { data: messages } = useGetMessagesQuery(receiverId, { enabled: !!receiverId });
 
+  const formatTime = (msg: Message) => {
+    if(!msg || !msg.sendAt) return "";
+    const date = new Date(msg.sendAt);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
   const send = () => {
     if (input.trim() && receiverId) {
       const payload = {
@@ -64,17 +70,27 @@ function RouteComponent() {
       <div className="flex-1 overflow-y-auto p-6 space-y-3">
         {messages?.data?.map((msg: Message, idx: number) => {
           const isMine = msg.senderId === user?.id;
+          const time = formatTime(msg);
           return (
             <div key={msg.id ?? idx} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-              <div
-                className={`relative px-5 py-3 rounded-2xl max-w-md shadow-sm ${
-                  isMine
-                    ? "bg-blue-600 text-white"
-                    : "bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
-                }`}
-              >
-                <span className="block text-base">{msg.text}</span>
-              </div>
+                <div className={`max-w-md flex flex-col ${isMine ? "items-end" : "items-start"}`}>
+                    <div
+                    className={`px-5 py-3 rounded-2xl shadow-sm ${
+                        isMine
+                        ? "bg-blue-600 text-white"
+                        : "bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+                    }`}
+                    >
+                        <span className="block text-base">{msg.text}</span>
+                    </div>
+                    {time && (
+                        <span
+                            className={`mt-1 text-[11px] leading-none text-gray-300 ${isMine ? "text-right pr-1" : "text-left pl-1"}`}
+                        >
+                            {time}
+                        </span>
+                    )}
+                </div>
             </div>
           );
         })}
