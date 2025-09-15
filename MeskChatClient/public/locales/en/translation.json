@@ -42,5 +42,15 @@
         "confirmPassword": "Confirm Password",
         "submit": "Register",
         "haveAccount": "Already have an account?"
+    },
+    "logout": "Logout",
+    "me": "Me",
+    "searchUsersPlaceholder": "Search users...",
+    "online": "Online",
+    "offline": "Offline",
+    "chat": {
+        "title": "Chat",
+        "description": "Select a user and start chatting.",
+        "writeMessage": "Write a message..."
     }
 }

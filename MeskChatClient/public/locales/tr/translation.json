@@ -42,5 +42,15 @@
         "confirmPassword": "Şifreyi Onayla",
         "submit": "Kayıt Ol",
         "haveAccount": "Zaten bir hesabınız var mı?"
+    },
+    "logout": "Çıkış Yap",
+    "me": "Ben",
+    "searchUsersPlaceholder": "Kullanıcıları ara...",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "chat": {
+        "title": "Sohbet",
+        "description": "Bir kullanıcı seçiniz ve sohbet başlatınız.",
+        "writeMessage": "Bir mesaj yazın..."
     }
 }

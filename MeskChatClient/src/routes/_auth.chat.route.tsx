@@ -100,7 +100,7 @@ function RouteComponent() {
             <Search className="text-gray-400 mr-2 w-4 h-4" />
             <Input
               className="bg-transparent outline-none w-full text-sm"
-              placeholder="Kullanıcı ara..."
+              placeholder={t("searchUsersPlaceholder")}
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ function RouteComponent() {
                 {(item && item?.status !== undefined) && (
                   <div className="flex gap-1 items-center">
                     <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[item.status]}`}></div>
-                    <div className="text-xs text-gray-400">{STATUS_TEXT_MAP[item.status]}</div>
+                    <div className="text-xs text-gray-400">{t(STATUS_TEXT_MAP[item.status])}</div>
                   </div>
                 )}
               </div>
@@ -149,7 +149,7 @@ function RouteComponent() {
                 <div className="font-medium text-base">
                   {user.firstName} {user.lastName}
                 </div>
-                <div className="text-xs text-gray-400">Ben</div>
+                <div className="text-xs text-gray-400">{t("me")}</div>
               </div>
             </div>
             <Button
@@ -160,7 +160,7 @@ function RouteComponent() {
                 logout();
               }}
             >
-              Çıkış
+              {t("logout")}
             </Button>
           </div>
         )}

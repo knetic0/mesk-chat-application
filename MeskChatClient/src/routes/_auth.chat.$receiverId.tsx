@@ -9,12 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { STATUS_TEXT_MAP, STATUS_COLOR_MAP } from "@/lib/status";
+import { useLanguage } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/_auth/chat/$receiverId")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const { receiverId } = useParams({ from: "/_auth/chat/$receiverId" });
   const [input, setInput] = useState("");
@@ -59,7 +61,7 @@ function RouteComponent() {
           {selectedUser?.status !== undefined && (
             <div className="flex gap-1 items-center">
               <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[selectedUser.status]}`} />
-              <div className="text-xs text-gray-400">{STATUS_TEXT_MAP[selectedUser.status]}</div>
+              <div className="text-xs text-gray-400">{t(STATUS_TEXT_MAP[selectedUser.status])}</div>
             </div>
           )}
         </div>
@@ -105,7 +107,7 @@ function RouteComponent() {
           <Input
             className="flex-1 px-4 py-3 rounded-full border border-gray-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:bg-slate-800 dark:text-white text-base shadow-sm"
             type="text"
-            placeholder="Mesaj yaz..."
+            placeholder={t("chat.writeMessage")}
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
