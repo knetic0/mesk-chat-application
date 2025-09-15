@@ -39,7 +39,7 @@ function RouteComponent() {
         const { accessToken, refreshToken } = data.data;
         login(accessToken, refreshToken);
         reset();
-        router.navigate({ to: '/chat/{-$receiverId}' });
+        router.navigate({ to: '/chat' });
       }
     },
     onError: (error: any) => {
