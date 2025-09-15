@@ -1,4 +1,3 @@
-[empty file]
 # MeskChat
 
 A modern, full-stack chat application enabling real-time messaging between users using SignalR. The project is fully dockerized for easy local development and deployment.
