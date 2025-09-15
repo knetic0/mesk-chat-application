@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 import { emitTokenRefreshed, emitTokenCleared } from './token-events';
+import type { ResponseEntityOfRefreshTokenCommandResponse } from "./types";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -17,25 +18,30 @@ api.interceptors.request.use(
     }
 );
 
+export const refreshTokenAsync = async (): Promise<{ accessToken: string }> => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) throw new Error("No refresh token");
+    const response = await axios.post<ResponseEntityOfRefreshTokenCommandResponse>(
+        `${baseURL}/api/v1/authentication/refresh-token`,
+        { refreshToken }
+    );
+    const { accessToken, refreshToken: newRefreshToken } = response.data?.data || {};
+    if (accessToken && newRefreshToken) {
+        emitTokenRefreshed(accessToken, newRefreshToken);
+    }
+    return { accessToken: accessToken! };
+}
+
 api.interceptors.response.use(
     response => response,
     async error => {
         const originalRequest = error.config;
         if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
             try {
-                const refreshToken = localStorage.getItem("refreshToken");
-                if (!refreshToken) throw new Error("No refresh token");
-                const refreshResponse = await axios.post(
-                    `${baseURL}/api/v1/authentication/refresh-token`,
-                    { refreshToken }
-                );
-                const { newAccessToken, newRefreshToken } = refreshResponse.data?.data || {};
-                if (newAccessToken && newRefreshToken) {
-                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                    emitTokenRefreshed(newAccessToken, newRefreshToken);
-                    return api(originalRequest);
-                }
+                const { accessToken } = await refreshTokenAsync();
+                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                originalRequest._retry = true;
+                return api(originalRequest);
             } catch (refreshError) {
                 emitTokenCleared();
             }
