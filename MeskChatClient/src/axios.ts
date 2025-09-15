@@ -1,4 +1,5 @@
 import axios, { type AxiosInstance } from "axios";
+import { emitTokenRefreshed, emitTokenCleared } from './token-events';
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -26,19 +27,17 @@ api.interceptors.response.use(
                 const refreshToken = localStorage.getItem("refreshToken");
                 if (!refreshToken) throw new Error("No refresh token");
                 const refreshResponse = await axios.post(
-                    "/api/v1/authentication/refresh-token",
+                    `${baseURL}/api/v1/authentication/refresh-token`,
                     { refreshToken }
                 );
                 const { newAccessToken, newRefreshToken } = refreshResponse.data?.data || {};
                 if (newAccessToken && newRefreshToken) {
-                    localStorage.setItem("accessToken", newAccessToken);
-                    localStorage.setItem("refreshToken", newRefreshToken);
+                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                    emitTokenRefreshed(newAccessToken, newRefreshToken);
                     return api(originalRequest);
                 }
             } catch (refreshError) {
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("refreshToken");
-                window.location.href = '/auth/login';
+                emitTokenCleared();
             }
         }
         return Promise.reject(error);

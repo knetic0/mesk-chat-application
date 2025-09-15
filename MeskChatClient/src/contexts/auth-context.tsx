@@ -3,6 +3,8 @@ import { useGetCurrentUserQuery } from "@/features/queries/auth/me/handler";
 import { connection } from "@/signalr";
 import type { ApplicationUser, ResponseEntityOfEmptyResponse } from "@/types";
 import { createContext, useState } from "react";
+import { TOKEN_EVENTS, type TokenClearedEvent, type TokenRefreshedEvent } from "@/token-events";
+import { useCustomEvent } from "@/hooks/use-custom-event";
 
 export interface AuthContextType {
     user: ApplicationUser | null;
@@ -23,16 +25,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
     const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem("refreshToken"));
 
+    useCustomEvent<TokenRefreshedEvent>(
+        TOKEN_EVENTS.TOKEN_REFRESHED,
+        ({ accessToken: newAccessToken, refreshToken: newRefreshToken }) => {
+            login(newAccessToken, newRefreshToken);
+        }
+    );
+
+    useCustomEvent<TokenClearedEvent>(
+        TOKEN_EVENTS.TOKEN_CLEARED,
+        () => {
+            logout();
+        }
+    );
+
+    const clearCredentials = () => {
+        setAccessToken(null);
+        setRefreshToken(null);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        if(connection.state === "Connected") {
+            connection.stop();
+        }
+        window.location.href = "/auth/login";
+    }
+
     const { mutate: logoutMutation } = useLogoutMutation({
         onSuccess: (data: ResponseEntityOfEmptyResponse) => {
             if(data.isSuccess) {
-                setAccessToken(null);
-                setRefreshToken(null);
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("refreshToken");
-                connection.stop();
-                window.location.href = "/auth/login";
+                clearCredentials();
             }
+        },
+        onError: () => {
+            clearCredentials();
         }
     })
     const { data: user } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
