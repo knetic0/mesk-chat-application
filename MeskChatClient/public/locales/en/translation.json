@@ -51,6 +51,7 @@
     "chat": {
         "title": "Chat",
         "description": "Select a user and start chatting.",
-        "writeMessage": "Write a message..."
+        "writeMessage": "Write a message...",
+        "messageNotification": "{{firstName}} {{lastName}} sent you a new message"
     }
 }

@@ -51,6 +51,7 @@
     "chat": {
         "title": "Sohbet",
         "description": "Bir kullanıcı seçiniz ve sohbet başlatınız.",
-        "writeMessage": "Bir mesaj yazın..."
+        "writeMessage": "Bir mesaj yazın...",
+        "messageNotification": "{{firstName}} {{lastName}} size yeni bir mesaj gönderdi"
     }
 }

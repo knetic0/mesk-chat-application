@@ -4,6 +4,7 @@ import { RouterProvider } from "@tanstack/react-router"
 import ThemeProvider from "./contexts/theme-context"
 import { AuthProvider } from "./contexts/auth-context"
 import { useAuth } from "./hooks/use-auth"
+import { Toaster } from "./components/ui/sonner"
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -34,6 +35,7 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <RouterProviderWithContext />
+          <Toaster />
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { STATUS_TEXT_MAP, STATUS_COLOR_MAP } from "@/lib/status";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_auth/chat")({
   component: RouteComponent,
@@ -25,11 +26,17 @@ function RouteComponent() {
   const receiverId = match && typeof match === "object" ? match.receiverId : undefined;
 
   const { data: users } = useGetUsersQuery();
-
   
   useEffect(() => {
     const recieveMessageHandler = (message: Message) => {
-      if (message.senderId !== receiverId && message.receiverId !== receiverId) return;
+      if (message.senderId !== receiverId && message.receiverId !== receiverId) {
+        const { firstName, lastName } = message.sender!;
+        toast.info(t("chat.messageNotification", { firstName, lastName }), {
+          description: `${message.text}`,
+          duration: 5000,
+        });
+        return;
+      };
       queryClient.setQueryData(
         ["messages", receiverId],
         (oldData: ResponseEntityOfListOfMessage | undefined) => {

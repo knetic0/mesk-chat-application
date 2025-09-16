@@ -35,6 +35,8 @@ public sealed class MessageRepository(ApplicationDatabaseContext context) : IMes
     public async Task CreateAsync(Message message, CancellationToken cancellationToken)
     {
         await _context.Set<Message>().AddAsync(message, cancellationToken);
+        await _context.Entry(message).Reference(m => m.Sender).LoadAsync(cancellationToken);
+        await _context.Entry(message).Reference(m => m.Receiver).LoadAsync(cancellationToken);
     }
 
     public void Update(Message message)

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using MeskChatApplication.Domain.Abstractions;
 using MeskChatApplication.Domain.Enums;
 
@@ -31,7 +32,10 @@ public sealed class User : Entity
     
     public ICollection<RefreshToken> RefreshTokens { get; init; } = new List<RefreshToken>();
     public ICollection<PasswordResetToken> PasswordResetTokens { get; init; } = new List<PasswordResetToken>();
+    
+    [JsonIgnore]
     public ICollection<Message> SentMessages { get; init; } = new List<Message>();
+    [JsonIgnore]
     public ICollection<Message> ReceivedMessages { get; init; } = new List<Message>();
 
     public User() { }
