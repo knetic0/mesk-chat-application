@@ -83,6 +83,10 @@ function RouteComponent() {
       if (connection.state !== "Connected") {
         await connection.start();
       }
+      connection.off("ReceiveMessage");
+      connection.off("SentMessage");
+      connection.off("UserStatusChanged");
+
       connection.on("ReceiveMessage", recieveMessageHandler);
       connection.on("SentMessage", sentMessageHandler);
       connection.on("UserStatusChanged", statusChangeHandler);
@@ -93,7 +97,7 @@ function RouteComponent() {
       connection.off("SentMessage", sentMessageHandler);
       connection.off("UserStatusChanged", statusChangeHandler);
     };
-  }, [queryClient, receiverId]);
+  }, [queryClient, receiverId, t]);
 
   return (
     <div className="w-full h-[650px] max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
