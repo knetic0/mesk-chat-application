@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { STATUS_TEXT_MAP, STATUS_COLOR_MAP } from "@/lib/status";
 import { toast } from "sonner";
+import { HubConnectionState } from "@microsoft/signalr";
 
 export const Route = createFileRoute("/_auth/chat")({
   component: RouteComponent,
@@ -80,7 +81,7 @@ function RouteComponent() {
       );
     };
     (async () => {
-      if (connection.state !== "Connected") {
+      if (connection.state !== HubConnectionState.Connected) {
         await connection.start();
       }
       connection.off("ReceiveMessage");
