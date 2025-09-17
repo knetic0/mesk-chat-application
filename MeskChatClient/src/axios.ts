@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 import { emitTokenRefreshed, emitTokenCleared } from './token-events';
-import type { ResponseEntityOfRefreshTokenCommandResponse } from "./types";
+import { getMeskChatApplicationWebApiV1 } from "./api/service";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -21,11 +21,9 @@ api.interceptors.request.use(
 export const refreshTokenAsync = async (): Promise<{ accessToken: string }> => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) throw new Error("No refresh token");
-    const response = await axios.post<ResponseEntityOfRefreshTokenCommandResponse>(
-        `${baseURL}/api/v1/authentication/refresh-token`,
-        { refreshToken }
-    );
-    const { accessToken, refreshToken: newRefreshToken } = response.data?.data || {};
+    const client = getMeskChatApplicationWebApiV1();
+    const response = await client.postApiV1AuthenticationRefreshToken({ refreshToken });
+    const { accessToken, refreshToken: newRefreshToken } = response.data || {};
     if (accessToken && newRefreshToken) {
         emitTokenRefreshed(accessToken, newRefreshToken);
     }
