@@ -96,7 +96,7 @@ function RouteComponent() {
       connection.off("SentMessage", sentMessageHandler);
       connection.off("UserStatusChanged", statusChangeHandler);
     };
-  }, [queryClient, receiverId, connection, t]);
+  }, [recieveMessageHandler, sentMessageHandler, statusChangeHandler]);
 
   return (
     <div className="w-full h-[650px] max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
