@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, useMatchRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Search, MoreVertical } from "lucide-react";
 import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
 import type { ApplicationUser, ApplicationUser2, Message, ResponseEntityOfListOfApplicationUser, ResponseEntityOfListOfMessage } from "@/types";
@@ -28,58 +28,59 @@ function RouteComponent() {
 
   const { data: users } = useGetUsersQuery();
   
-  useEffect(() => {
-    const recieveMessageHandler = (message: Message) => {
-      if (message.senderId !== receiverId && message.receiverId !== receiverId) {
-        const { firstName, lastName } = message.sender!;
-        toast.info(t("chat.messageNotification", { firstName, lastName }), {
-          description: `${message.text}`,
-          duration: 5000,
-        });
-        return;
-      };
-      queryClient.setQueryData(
-        ["messages", receiverId],
-        (oldData: ResponseEntityOfListOfMessage | undefined) => {
-          if (!oldData) return oldData;
-          return {
-            ...oldData,
-            data: [...(oldData.data ?? []), message],
-          };
-        }
-      );
-    }
-
-    const sentMessageHandler = (message: Message) => {
-      queryClient.setQueryData(
-        ["messages", receiverId],
-        (oldData: ResponseEntityOfListOfMessage | undefined) => {
-          if (!oldData) return oldData;
-          return {
-            ...oldData,
-            data: [...(oldData.data ?? []), message],
-          };
-        }
-      );
-    }
-
-    const statusChangeHandler = (applicationUser: ApplicationUser2) => {
-      queryClient.setQueryData(
-        ["users"],
-        (oldData: ResponseEntityOfListOfApplicationUser | undefined) => {
-          if (!oldData) return oldData;
-          const exists = oldData.data?.some((u: ApplicationUser2) => u.id === applicationUser.id);
-          return {
-            ...oldData,
-            data: exists
-              ? oldData.data?.map((u: ApplicationUser2) =>
-                  u.id === applicationUser.id ? { ...u, status: applicationUser.status } : u
-                )
-              : [...(oldData.data ?? []), applicationUser],
-          };
-        }
-      );
+  const recieveMessageHandler = useCallback((message: Message) => {
+    if (message.senderId !== receiverId && message.receiverId !== receiverId) {
+      const { firstName, lastName } = message.sender!;
+      toast.info(t("chat.messageNotification", { firstName, lastName }), {
+        description: `${message.text}`,
+        duration: 5000,
+      });
+      return;
     };
+    queryClient.setQueryData(
+      ["messages", receiverId],
+      (oldData: ResponseEntityOfListOfMessage | undefined) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: [...(oldData.data ?? []), message],
+        };
+      }
+    );
+  }, [queryClient, receiverId, t]);
+
+  const sentMessageHandler = useCallback((message: Message) => {
+    queryClient.setQueryData(
+      ["messages", receiverId],
+      (oldData: ResponseEntityOfListOfMessage | undefined) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: [...(oldData.data ?? []), message],
+        };
+      }
+    );
+  }, [queryClient, receiverId]);
+
+  const statusChangeHandler = useCallback((applicationUser: ApplicationUser2) => {
+    queryClient.setQueryData(
+      ["users"],
+      (oldData: ResponseEntityOfListOfApplicationUser | undefined) => {
+        if (!oldData) return oldData;
+        const exists = oldData.data?.some((u: ApplicationUser2) => u.id === applicationUser.id);
+        return {
+          ...oldData,
+          data: exists
+            ? oldData.data?.map((u: ApplicationUser2) =>
+                u.id === applicationUser.id ? { ...u, status: applicationUser.status } : u
+              )
+            : [...(oldData.data ?? []), applicationUser],
+        };
+      }
+    );
+  }, [queryClient]);
+
+  useEffect(() => {
     (async () => {
       if (connection.state !== HubConnectionState.Connected) {
         await connection.start();
@@ -95,7 +96,7 @@ function RouteComponent() {
       connection.off("SentMessage", sentMessageHandler);
       connection.off("UserStatusChanged", statusChangeHandler);
     };
-  }, [queryClient, receiverId, t]);
+  }, [queryClient, receiverId, connection, t]);
 
   return (
     <div className="w-full h-[650px] max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
