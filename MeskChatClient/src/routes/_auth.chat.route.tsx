@@ -84,9 +84,6 @@ function RouteComponent() {
       if (connection.state !== HubConnectionState.Connected) {
         await connection.start();
       }
-      connection.off("ReceiveMessage");
-      connection.off("SentMessage");
-      connection.off("UserStatusChanged");
 
       connection.on("ReceiveMessage", recieveMessageHandler);
       connection.on("SentMessage", sentMessageHandler);
