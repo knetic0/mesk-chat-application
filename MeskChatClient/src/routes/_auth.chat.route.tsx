@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useMatchRoute, useNavigate } from "@tanstack/r
 import { useCallback, useEffect } from "react";
 import { Search, MoreVertical } from "lucide-react";
 import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
-import type { ApplicationUser, ApplicationUser2, Message, ResponseEntityOfListOfApplicationUser, ResponseEntityOfListOfMessage } from "@/types";
+import type { ApplicationUser2, Message, ResponseEntityOfListOfApplicationUser, ResponseEntityOfListOfMessage } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
 import { connection } from "@/signalr";
 import { useLanguage } from "@/hooks/use-language";
@@ -12,6 +12,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { STATUS_TEXT_MAP, STATUS_COLOR_MAP } from "@/lib/status";
 import { toast } from "sonner";
 import { HubConnectionState } from "@microsoft/signalr";
+
+type MatchRoute = { receiverId: string };
 
 export const Route = createFileRoute("/_auth/chat")({
   component: RouteComponent,
@@ -24,7 +26,7 @@ function RouteComponent() {
   const matchRoute = useMatchRoute();
   const queryClient = useQueryClient();
   const match = matchRoute({ to: "/chat/$receiverId" as const });
-  const receiverId = match && typeof match === "object" ? match.receiverId : undefined;
+  const receiverId = (match as MatchRoute)?.receiverId;
 
   const { data: users } = useGetUsersQuery();
   
@@ -115,7 +117,7 @@ function RouteComponent() {
           </div>
         </div>
         <ul className="flex-1 overflow-y-auto mt-2">
-          {users?.data?.map((item: ApplicationUser) => (
+          {users?.data?.map((item: ApplicationUser2) => (
             <li
               key={item?.id}
               className={`cursor-pointer flex items-center gap-3 px-4 py-3 hover:bg-blue-100 dark:hover:bg-slate-800 transition-all ${
