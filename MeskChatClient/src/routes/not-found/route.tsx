@@ -1,9 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Home, ArrowLeft, Search } from 'lucide-react';
 import { Trans } from 'react-i18next';
 import { useLanguage } from '@/hooks/use-language';
+import { router } from '@/router';
 
 export const Route = createFileRoute('/not-found')({
   component: NotFoundPage,
@@ -11,6 +12,7 @@ export const Route = createFileRoute('/not-found')({
 
 function NotFoundPage() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -41,6 +43,7 @@ function NotFoundPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button 
             className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3"
+            onClick={() => navigate({ to: '/chat' })}
           >
             <Home className="w-4 h-4" />
             {t('homepage')}
@@ -48,16 +51,10 @@ function NotFoundPage() {
           <Button 
             variant="outline"
             className="flex items-center gap-2 px-6 py-3 bg-white text-slate-900 dark:text-white"
+            onClick={() => router.history.back()}
           >
             <ArrowLeft className="w-4 h-4" />
             {t('goBack')}
-          </Button>
-          <Button 
-            variant="outline"
-            className="flex items-center gap-2 px-6 py-3"
-          >
-            <Search className="w-4 h-4" />
-            {t('search')}
           </Button>
         </div>
         <div className="pt-8 text-center">
