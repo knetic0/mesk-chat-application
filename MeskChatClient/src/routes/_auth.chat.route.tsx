@@ -1,17 +1,17 @@
 import { createFileRoute, Outlet, useMatchRoute, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { Search, MoreVertical } from "lucide-react";
 import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
-import type { ApplicationUser2, Message, ResponseEntityOfListOfApplicationUser, ResponseEntityOfListOfMessage } from "@/types";
+import type { ApplicationUser2 } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
 import { connection } from "@/signalr";
 import { useLanguage } from "@/hooks/use-language";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useQueryClient } from "@tanstack/react-query";
 import { STATUS_TEXT_MAP, STATUS_COLOR_MAP } from "@/lib/status";
-import { toast } from "sonner";
 import { HubConnectionState } from "@microsoft/signalr";
+import { useMessageHandlers } from "@/hooks/use-message-handlers";
+import { useUsersHandlers } from "@/hooks/use-users-handlers";
 
 type MatchRoute = { receiverId: string };
 
@@ -24,81 +24,31 @@ function RouteComponent() {
   const { t } = useLanguage();
   const { user, logout } = useAuth();
   const matchRoute = useMatchRoute();
-  const queryClient = useQueryClient();
   const match = matchRoute({ to: "/chat/$receiverId" as const });
   const receiverId = (match as MatchRoute)?.receiverId;
 
   const { data: users } = useGetUsersQuery();
+
+  const { onMessageReceived, onMessageSent } = useMessageHandlers(receiverId!);
+  const { onStatusChange } = useUsersHandlers();
   
-  const recieveMessageHandler = useCallback((message: Message) => {
-    if (message.senderId !== receiverId && message.receiverId !== receiverId) {
-      const { firstName, lastName } = message.sender!;
-      toast.info(t("chat.messageNotification", { firstName, lastName }), {
-        description: `${message.text}`,
-        duration: 5000,
-      });
-      return;
-    };
-    queryClient.setQueryData(
-      ["messages", receiverId],
-      (oldData: ResponseEntityOfListOfMessage | undefined) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          data: [...(oldData.data ?? []), message],
-        };
-      }
-    );
-  }, [queryClient, receiverId, t]);
-
-  const sentMessageHandler = useCallback((message: Message) => {
-    queryClient.setQueryData(
-      ["messages", receiverId],
-      (oldData: ResponseEntityOfListOfMessage | undefined) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          data: [...(oldData.data ?? []), message],
-        };
-      }
-    );
-  }, [queryClient, receiverId]);
-
-  const statusChangeHandler = useCallback((applicationUser: ApplicationUser2) => {
-    queryClient.setQueryData(
-      ["users"],
-      (oldData: ResponseEntityOfListOfApplicationUser | undefined) => {
-        if (!oldData) return oldData;
-        const exists = oldData.data?.some((u: ApplicationUser2) => u.id === applicationUser.id);
-        return {
-          ...oldData,
-          data: exists
-            ? oldData.data?.map((u: ApplicationUser2) =>
-                u.id === applicationUser.id ? { ...u, status: applicationUser.status } : u
-              )
-            : [...(oldData.data ?? []), applicationUser],
-        };
-      }
-    );
-  }, [queryClient]);
-
   useEffect(() => {
     (async () => {
       if (connection.state !== HubConnectionState.Connected) {
         await connection.start();
       }
 
-      connection.on("ReceiveMessage", recieveMessageHandler);
-      connection.on("SentMessage", sentMessageHandler);
-      connection.on("UserStatusChanged", statusChangeHandler);
+      connection.on("ReceiveMessage", onMessageReceived);
+      connection.on("SentMessage", onMessageSent);
+      connection.on("UserStatusChanged", onStatusChange);
     })();
 
     return () => {
-      connection.off("ReceiveMessage", recieveMessageHandler);
-      connection.off("SentMessage", sentMessageHandler);
-      connection.off("UserStatusChanged", statusChangeHandler);
+      connection.off("ReceiveMessage", onMessageReceived);
+      connection.off("SentMessage", onMessageSent);
+      connection.off("UserStatusChanged", onStatusChange);
     };
-  }, [recieveMessageHandler, sentMessageHandler, statusChangeHandler]);
+  }, [onMessageReceived, onMessageSent, onStatusChange]);
 
   return (
     <div className="w-full h-[650px] max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
