@@ -8,10 +8,10 @@ import { connection } from "@/signalr";
 import { useLanguage } from "@/hooks/use-language";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { STATUS_TEXT_MAP, STATUS_COLOR_MAP } from "@/lib/status";
 import { HubConnectionState } from "@microsoft/signalr";
 import { useMessageHandlers } from "@/hooks/use-message-handlers";
 import { useUsersHandlers } from "@/hooks/use-users-handlers";
+import StatusBadge from "@/components/status-badge";
 
 type MatchRoute = { receiverId: string };
 
@@ -89,12 +89,7 @@ function RouteComponent() {
                 <div className="font-medium text-base">
                   {item?.firstName + " " + item?.lastName}
                 </div>
-                {(item && item?.status !== undefined) && (
-                  <div className="flex gap-1 items-center">
-                    <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[item.status]}`}></div>
-                    <div className="text-xs text-gray-400">{t(STATUS_TEXT_MAP[item.status])}</div>
-                  </div>
-                )}
+                {item?.status !== undefined && <StatusBadge status={item.status} />}
               </div>
             </li>
           ))}

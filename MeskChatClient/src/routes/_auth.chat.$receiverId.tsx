@@ -8,8 +8,8 @@ import { connection } from "@/signalr";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { STATUS_TEXT_MAP, STATUS_COLOR_MAP } from "@/lib/status";
 import { useLanguage } from "@/hooks/use-language";
+import StatusBadge from "@/components/status-badge";
 
 export const Route = createFileRoute("/_auth/chat/$receiverId")({
   component: RouteComponent,
@@ -59,10 +59,7 @@ function RouteComponent() {
             {selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}` : "Sohbet"}
           </div>
           {selectedUser?.status !== undefined && (
-            <div className="flex gap-1 items-center">
-              <div className={`w-2 h-2 rounded-full ${STATUS_COLOR_MAP[selectedUser.status]}`} />
-              <div className="text-xs text-gray-400">{t(STATUS_TEXT_MAP[selectedUser.status])}</div>
-            </div>
+            <StatusBadge status={selectedUser.status} />
           )}
         </div>
         <MoreVertical className="text-gray-400 w-5 h-5" />
