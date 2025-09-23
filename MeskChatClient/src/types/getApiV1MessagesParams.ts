@@ -6,5 +6,5 @@
  */
 
 export type GetApiV1MessagesParams = {
-receiverId: string;
+  receiverId: string;
 };

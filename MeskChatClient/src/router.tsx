@@ -1,13 +1,13 @@
-import { createRouter, Navigate } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
-import type { AuthContextType } from "./contexts/auth-context";
+import { createRouter, Navigate } from '@tanstack/react-router';
+import { routeTree } from './routeTree.gen';
+import type { AuthContextType } from './contexts/auth-context';
 
-export type AppRouterContext = AuthContextType & { }
+export type AppRouterContext = AuthContextType & {};
 
 export const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
-  defaultNotFoundComponent: () => <Navigate to='/not-found' replace />,
+  defaultNotFoundComponent: () => <Navigate to="/not-found" replace />,
   context: {
     user: null,
     accessToken: null,

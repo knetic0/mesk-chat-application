@@ -17,112 +17,141 @@ import type {
   ResponseEntityOfListOfApplicationUser,
   ResponseEntityOfListOfMessage,
   ResponseEntityOfLoginCommandResponse,
-  ResponseEntityOfRefreshTokenCommandResponse
+  ResponseEntityOfRefreshTokenCommandResponse,
 } from '../types';
 
 import { axiosInstance } from '../axios';
 export const getMeskChatApplicationWebApiV1 = () => {
-const postApiV1AuthenticationLogin = (
-    loginCommand: LoginCommand,
- ) => {
-      return axiosInstance<ResponseEntityOfLoginCommandResponse>(
-      {url: `/api/v1/authentication/login`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: loginCommand
-    },
-      );
-    }
-  
-const postApiV1AuthenticationRegister = (
-    registerCommand: RegisterCommand,
- ) => {
-      return axiosInstance<ResponseEntityOfEmptyResponse>(
-      {url: `/api/v1/authentication/register`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: registerCommand
-    },
-      );
-    }
-  
-const getApiV1AuthenticationMe = (
-    
- ) => {
-      return axiosInstance<ResponseEntityOfApplicationUser>(
-      {url: `/api/v1/authentication/me`, method: 'GET'
-    },
-      );
-    }
-  
-const postApiV1AuthenticationRefreshToken = (
-    refreshTokenCommand: RefreshTokenCommand,
- ) => {
-      return axiosInstance<ResponseEntityOfRefreshTokenCommandResponse>(
-      {url: `/api/v1/authentication/refresh-token`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: refreshTokenCommand
-    },
-      );
-    }
-  
-const postApiV1AuthenticationLogout = (
-    logoutCommand: LogoutCommand,
- ) => {
-      return axiosInstance<ResponseEntityOfEmptyResponse>(
-      {url: `/api/v1/authentication/logout`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: logoutCommand
-    },
-      );
-    }
-  
-const postApiV1AuthenticationForgotPassword = (
-    forgotPasswordCommand: ForgotPasswordCommand,
- ) => {
-      return axiosInstance<ResponseEntityOfEmptyResponse>(
-      {url: `/api/v1/authentication/forgot-password`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: forgotPasswordCommand
-    },
-      );
-    }
-  
-const postApiV1AuthenticationResetPassword = (
-    resetPasswordCommand: ResetPasswordCommand,
- ) => {
-      return axiosInstance<ResponseEntityOfEmptyResponse>(
-      {url: `/api/v1/authentication/reset-password`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: resetPasswordCommand
-    },
-      );
-    }
-  
-const getApiV1Messages = (
-    params: GetApiV1MessagesParams,
- ) => {
-      return axiosInstance<ResponseEntityOfListOfMessage>(
-      {url: `/api/v1/messages`, method: 'GET',
-        params
-    },
-      );
-    }
-  
-const getApiV1Users = (
-    
- ) => {
-      return axiosInstance<ResponseEntityOfListOfApplicationUser>(
-      {url: `/api/v1/users`, method: 'GET'
-    },
-      );
-    }
-  
-return {postApiV1AuthenticationLogin,postApiV1AuthenticationRegister,getApiV1AuthenticationMe,postApiV1AuthenticationRefreshToken,postApiV1AuthenticationLogout,postApiV1AuthenticationForgotPassword,postApiV1AuthenticationResetPassword,getApiV1Messages,getApiV1Users}};
-export type PostApiV1AuthenticationLoginResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationLogin']>>>
-export type PostApiV1AuthenticationRegisterResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationRegister']>>>
-export type GetApiV1AuthenticationMeResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['getApiV1AuthenticationMe']>>>
-export type PostApiV1AuthenticationRefreshTokenResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationRefreshToken']>>>
-export type PostApiV1AuthenticationLogoutResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationLogout']>>>
-export type PostApiV1AuthenticationForgotPasswordResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationForgotPassword']>>>
-export type PostApiV1AuthenticationResetPasswordResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationResetPassword']>>>
-export type GetApiV1MessagesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['getApiV1Messages']>>>
-export type GetApiV1UsersResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['getApiV1Users']>>>
+  const postApiV1AuthenticationLogin = (loginCommand: LoginCommand) => {
+    return axiosInstance<ResponseEntityOfLoginCommandResponse>({
+      url: `/api/v1/authentication/login`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: loginCommand,
+    });
+  };
+
+  const postApiV1AuthenticationRegister = (registerCommand: RegisterCommand) => {
+    return axiosInstance<ResponseEntityOfEmptyResponse>({
+      url: `/api/v1/authentication/register`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: registerCommand,
+    });
+  };
+
+  const getApiV1AuthenticationMe = () => {
+    return axiosInstance<ResponseEntityOfApplicationUser>({
+      url: `/api/v1/authentication/me`,
+      method: 'GET',
+    });
+  };
+
+  const postApiV1AuthenticationRefreshToken = (refreshTokenCommand: RefreshTokenCommand) => {
+    return axiosInstance<ResponseEntityOfRefreshTokenCommandResponse>({
+      url: `/api/v1/authentication/refresh-token`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: refreshTokenCommand,
+    });
+  };
+
+  const postApiV1AuthenticationLogout = (logoutCommand: LogoutCommand) => {
+    return axiosInstance<ResponseEntityOfEmptyResponse>({
+      url: `/api/v1/authentication/logout`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: logoutCommand,
+    });
+  };
+
+  const postApiV1AuthenticationForgotPassword = (forgotPasswordCommand: ForgotPasswordCommand) => {
+    return axiosInstance<ResponseEntityOfEmptyResponse>({
+      url: `/api/v1/authentication/forgot-password`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: forgotPasswordCommand,
+    });
+  };
+
+  const postApiV1AuthenticationResetPassword = (resetPasswordCommand: ResetPasswordCommand) => {
+    return axiosInstance<ResponseEntityOfEmptyResponse>({
+      url: `/api/v1/authentication/reset-password`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: resetPasswordCommand,
+    });
+  };
+
+  const getApiV1Messages = (params: GetApiV1MessagesParams) => {
+    return axiosInstance<ResponseEntityOfListOfMessage>({
+      url: `/api/v1/messages`,
+      method: 'GET',
+      params,
+    });
+  };
+
+  const getApiV1Users = () => {
+    return axiosInstance<ResponseEntityOfListOfApplicationUser>({
+      url: `/api/v1/users`,
+      method: 'GET',
+    });
+  };
+
+  return {
+    postApiV1AuthenticationLogin,
+    postApiV1AuthenticationRegister,
+    getApiV1AuthenticationMe,
+    postApiV1AuthenticationRefreshToken,
+    postApiV1AuthenticationLogout,
+    postApiV1AuthenticationForgotPassword,
+    postApiV1AuthenticationResetPassword,
+    getApiV1Messages,
+    getApiV1Users,
+  };
+};
+export type PostApiV1AuthenticationLoginResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationLogin']>
+  >
+>;
+export type PostApiV1AuthenticationRegisterResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationRegister']>
+  >
+>;
+export type GetApiV1AuthenticationMeResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['getApiV1AuthenticationMe']>>
+>;
+export type PostApiV1AuthenticationRefreshTokenResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationRefreshToken']
+    >
+  >
+>;
+export type PostApiV1AuthenticationLogoutResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationLogout']>
+  >
+>;
+export type PostApiV1AuthenticationForgotPasswordResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationForgotPassword']
+    >
+  >
+>;
+export type PostApiV1AuthenticationResetPasswordResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<typeof getMeskChatApplicationWebApiV1>['postApiV1AuthenticationResetPassword']
+    >
+  >
+>;
+export type GetApiV1MessagesResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['getApiV1Messages']>>
+>;
+export type GetApiV1UsersResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['getApiV1Users']>>
+>;

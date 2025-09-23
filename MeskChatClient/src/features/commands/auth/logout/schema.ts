@@ -1,5 +1,5 @@
-import { z } from "zod";
-import type { LogoutCommand } from "@/types";
+import { z } from 'zod';
+import type { LogoutCommand } from '@/types';
 
 export const logoutSchema = z.object({
   refreshToken: z.string().nonoptional(),

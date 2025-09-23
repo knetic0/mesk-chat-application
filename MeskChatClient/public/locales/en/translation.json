@@ -1,58 +1,58 @@
 {
-    "welcome": "Welcome",
-    "homepage": "Home Page",
-    "goBack": "Go Back",
-    "search": "Search",
-    "hint": "Hint",
-    "signUp": "Sign Up",
-    "signIn": "Sign In",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "username": "Username",
-    "chats": "Chats",
-    "notFound": {
-        "title": "Page Not Found",
-        "description": "The page you are looking for does not exist or has been moved.",
-        "hintDescription": "Check the URL for typos or try using the search function.",
-        "helpDescription": "<p>If you need help, <button>contact us</button>.</p>"
-    },
-    "theme": {
-        "lightMode": "Light",
-        "darkMode": "Dark",
-        "system": "System"
-    },
-    "language": {
-        "english": "English",
-        "turkish": "Turkish"
-    },
-    "email": "Email",
-    "password": "Password",
-    "login": {
-        "loading": "Logging in...",
-        "title": "Login to your account",
-        "description": "Enter your email below to login to your account",
-        "forgotPassword": "Forgot your password?",
-        "submit": "Login",
-        "dontHaveAccount": "Don't have an account?"
-    },
-    "register": {
-        "loading": "Registering...",
-        "title": "Create an account",
-        "description": "Enter your email below to create an account",
-        "confirmPassword": "Confirm Password",
-        "submit": "Register",
-        "haveAccount": "Already have an account?"
-    },
-    "logout": "Logout",
-    "me": "Me",
-    "searchUsersPlaceholder": "Search users...",
-    "online": "Online",
-    "offline": "Offline",
-    "unknown": "Unknown",
-    "chat": {
-        "title": "Chat",
-        "description": "Select a user and start chatting.",
-        "writeMessage": "Write a message...",
-        "messageNotification": "{{firstName}} {{lastName}} sent you a new message"
-    }
+  "welcome": "Welcome",
+  "homepage": "Home Page",
+  "goBack": "Go Back",
+  "search": "Search",
+  "hint": "Hint",
+  "signUp": "Sign Up",
+  "signIn": "Sign In",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "username": "Username",
+  "chats": "Chats",
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "hintDescription": "Check the URL for typos or try using the search function.",
+    "helpDescription": "<p>If you need help, <button>contact us</button>.</p>"
+  },
+  "theme": {
+    "lightMode": "Light",
+    "darkMode": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "english": "English",
+    "turkish": "Turkish"
+  },
+  "email": "Email",
+  "password": "Password",
+  "login": {
+    "loading": "Logging in...",
+    "title": "Login to your account",
+    "description": "Enter your email below to login to your account",
+    "forgotPassword": "Forgot your password?",
+    "submit": "Login",
+    "dontHaveAccount": "Don't have an account?"
+  },
+  "register": {
+    "loading": "Registering...",
+    "title": "Create an account",
+    "description": "Enter your email below to create an account",
+    "confirmPassword": "Confirm Password",
+    "submit": "Register",
+    "haveAccount": "Already have an account?"
+  },
+  "logout": "Logout",
+  "me": "Me",
+  "searchUsersPlaceholder": "Search users...",
+  "online": "Online",
+  "offline": "Offline",
+  "unknown": "Unknown",
+  "chat": {
+    "title": "Chat",
+    "description": "Select a user and start chatting.",
+    "writeMessage": "Write a message...",
+    "messageNotification": "{{firstName}} {{lastName}} sent you a new message"
+  }
 }

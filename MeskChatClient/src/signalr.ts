@@ -1,11 +1,11 @@
-import * as signalR from "@microsoft/signalr";
-import { refreshTokenAsync } from "./axios";
+import * as signalR from '@microsoft/signalr';
+import { refreshTokenAsync } from './axios';
 
 const baseURL = import.meta.env.VITE_API_URL;
 
 const getAuthHeaders = () => {
   return {
-    Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+    Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
   };
 };
 
@@ -21,7 +21,7 @@ class CustomHttpClient extends signalR.DefaultHttpClient {
       const response = await super.send(request);
       return response;
     } catch (er) {
-      if(er instanceof signalR.HttpError) {
+      if (er instanceof signalR.HttpError) {
         const error = er as signalR.HttpError;
         if (error.statusCode === 401) {
           await refreshTokenAsync();
@@ -35,7 +35,6 @@ class CustomHttpClient extends signalR.DefaultHttpClient {
     return super.send(request);
   }
 }
-
 
 export const connection = new signalR.HubConnectionBuilder()
   .withUrl(`${baseURL}/chat`, {

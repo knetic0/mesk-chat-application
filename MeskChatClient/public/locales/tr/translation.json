@@ -1,58 +1,58 @@
 {
-    "welcome": "Hoş Geldiniz",
-    "homepage": "Ana Sayfa",
-    "goBack": "Geri Dön",
-    "search": "Arama",
-    "hint": "İpucu",
-    "signUp": "Kaydol",
-    "signIn": "Giriş Yap",
-    "firstName": "Ad",
-    "lastName": "Soyad",
-    "username": "Kullanıcı Adı",
-    "chats": "Sohbetler",
-    "notFound": {
-        "title": "Sayfa Bulunamadı",
-        "description": "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
-        "hintDescription": "Yazım hataları için URL'yi kontrol edin veya arama işlevini kullanmayı deneyin.",
-        "helpDescription": "<p>Yardım gerekiyorsa, <button>bize ulaşın</button>.</p>"
-    },
-    "theme": {
-        "lightMode": "Açık",
-        "darkMode": "Koyu",
-        "system": "Sistem"
-    },
-    "language": {
-        "english": "İngilizce",
-        "turkish": "Türkçe"
-    },
-    "email": "E-posta",
-    "password": "Şifre",
-    "login": {
-        "loading": "Giriş yapılıyor...",
-        "title": "Hesabınıza Giriş Yapın",
-        "description": "Hesabınıza giriş yapmak için aşağıya e-posta adresinizi girin",
-        "forgotPassword": "Şifrenizi mi unuttunuz?",
-        "submit": "Giriş",
-        "dontHaveAccount": "Hesabınız yok mu?"
-    },
-    "register": {
-        "loading": "Kayıt olunuyor...",
-        "title": "Hesap Oluşturun",
-        "description": "Hesap oluşturmak için aşağıya e-posta adresinizi girin",
-        "confirmPassword": "Şifreyi Onayla",
-        "submit": "Kayıt Ol",
-        "haveAccount": "Zaten bir hesabınız var mı?"
-    },
-    "logout": "Çıkış Yap",
-    "me": "Ben",
-    "searchUsersPlaceholder": "Kullanıcıları ara...",
-    "online": "Çevrimiçi",
-    "offline": "Çevrimdışı",
-    "unknown": "Bilinmiyor",
-    "chat": {
-        "title": "Sohbet",
-        "description": "Bir kullanıcı seçiniz ve sohbet başlatınız.",
-        "writeMessage": "Bir mesaj yazın...",
-        "messageNotification": "{{firstName}} {{lastName}} size yeni bir mesaj gönderdi"
-    }
+  "welcome": "Hoş Geldiniz",
+  "homepage": "Ana Sayfa",
+  "goBack": "Geri Dön",
+  "search": "Arama",
+  "hint": "İpucu",
+  "signUp": "Kaydol",
+  "signIn": "Giriş Yap",
+  "firstName": "Ad",
+  "lastName": "Soyad",
+  "username": "Kullanıcı Adı",
+  "chats": "Sohbetler",
+  "notFound": {
+    "title": "Sayfa Bulunamadı",
+    "description": "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
+    "hintDescription": "Yazım hataları için URL'yi kontrol edin veya arama işlevini kullanmayı deneyin.",
+    "helpDescription": "<p>Yardım gerekiyorsa, <button>bize ulaşın</button>.</p>"
+  },
+  "theme": {
+    "lightMode": "Açık",
+    "darkMode": "Koyu",
+    "system": "Sistem"
+  },
+  "language": {
+    "english": "İngilizce",
+    "turkish": "Türkçe"
+  },
+  "email": "E-posta",
+  "password": "Şifre",
+  "login": {
+    "loading": "Giriş yapılıyor...",
+    "title": "Hesabınıza Giriş Yapın",
+    "description": "Hesabınıza giriş yapmak için aşağıya e-posta adresinizi girin",
+    "forgotPassword": "Şifrenizi mi unuttunuz?",
+    "submit": "Giriş",
+    "dontHaveAccount": "Hesabınız yok mu?"
+  },
+  "register": {
+    "loading": "Kayıt olunuyor...",
+    "title": "Hesap Oluşturun",
+    "description": "Hesap oluşturmak için aşağıya e-posta adresinizi girin",
+    "confirmPassword": "Şifreyi Onayla",
+    "submit": "Kayıt Ol",
+    "haveAccount": "Zaten bir hesabınız var mı?"
+  },
+  "logout": "Çıkış Yap",
+  "me": "Ben",
+  "searchUsersPlaceholder": "Kullanıcıları ara...",
+  "online": "Çevrimiçi",
+  "offline": "Çevrimdışı",
+  "unknown": "Bilinmiyor",
+  "chat": {
+    "title": "Sohbet",
+    "description": "Bir kullanıcı seçiniz ve sohbet başlatınız.",
+    "writeMessage": "Bir mesaj yazın...",
+    "messageNotification": "{{firstName}} {{lastName}} size yeni bir mesaj gönderdi"
+  }
 }

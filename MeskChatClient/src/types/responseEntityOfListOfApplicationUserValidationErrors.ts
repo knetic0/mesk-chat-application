@@ -8,4 +8,6 @@
 /**
  * @nullable
  */
-export type ResponseEntityOfListOfApplicationUserValidationErrors = {[key: string]: string} | null;
+export type ResponseEntityOfListOfApplicationUserValidationErrors = {
+  [key: string]: string;
+} | null;

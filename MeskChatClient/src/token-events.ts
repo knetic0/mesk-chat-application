@@ -1,6 +1,6 @@
 export const TOKEN_EVENTS = {
   TOKEN_REFRESHED: 'tokenRefreshed',
-  TOKEN_CLEARED: 'tokenCleared'
+  TOKEN_CLEARED: 'tokenCleared',
 } as const;
 
 export type TokenRefreshedEvent = CustomEvent<{
@@ -11,9 +11,11 @@ export type TokenRefreshedEvent = CustomEvent<{
 export type TokenClearedEvent = CustomEvent<{}>;
 
 export const emitTokenRefreshed = (accessToken: string, refreshToken: string) => {
-  window.dispatchEvent(new CustomEvent(TOKEN_EVENTS.TOKEN_REFRESHED, {
-    detail: { accessToken, refreshToken }
-  }));
+  window.dispatchEvent(
+    new CustomEvent(TOKEN_EVENTS.TOKEN_REFRESHED, {
+      detail: { accessToken, refreshToken },
+    })
+  );
 };
 
 export const emitTokenCleared = () => {

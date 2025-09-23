@@ -13,35 +13,44 @@ export interface LanguageOption {
 export const useLanguage = () => {
   const { t, i18n } = useTranslation();
 
-  const supportedLanguages: LanguageOption[] = useMemo(() => [
-    {
-      code: 'tr',
-      label: t('language.turkish'),
-      flag: '🇹🇷',
-      nativeName: 'Türkçe'
-    },
-    {
-      code: 'en',
-      label: t('language.english'),
-      flag: '🇬🇧',
-      nativeName: 'English'
-    }
-  ], [t]);
+  const supportedLanguages: LanguageOption[] = useMemo(
+    () => [
+      {
+        code: 'tr',
+        label: t('language.turkish'),
+        flag: '🇹🇷',
+        nativeName: 'Türkçe',
+      },
+      {
+        code: 'en',
+        label: t('language.english'),
+        flag: '🇬🇧',
+        nativeName: 'English',
+      },
+    ],
+    [t]
+  );
 
   const currentLanguage = i18n.language as SupportedLanguage;
 
-  const currentLanguageInfo = useMemo(() => 
-    supportedLanguages.find(lang => lang.code === currentLanguage) || supportedLanguages[0],
+  const currentLanguageInfo = useMemo(
+    () => supportedLanguages.find(lang => lang.code === currentLanguage) || supportedLanguages[0],
     [supportedLanguages, currentLanguage]
   );
 
-  const changeLanguage = useCallback((languageCode: SupportedLanguage) => {
-    i18n.changeLanguage(languageCode);
-  }, [i18n]);
+  const changeLanguage = useCallback(
+    (languageCode: SupportedLanguage) => {
+      i18n.changeLanguage(languageCode);
+    },
+    [i18n]
+  );
 
-  const isLanguageActive = useCallback((languageCode: SupportedLanguage) => {
-    return currentLanguage === languageCode;
-  }, [currentLanguage]);
+  const isLanguageActive = useCallback(
+    (languageCode: SupportedLanguage) => {
+      return currentLanguage === languageCode;
+    },
+    [currentLanguage]
+  );
 
   const toggleLanguage = useCallback(() => {
     const currentIndex = supportedLanguages.findIndex(lang => lang.code === currentLanguage);
@@ -52,7 +61,7 @@ export const useLanguage = () => {
   const detectAndSetBrowserLanguage = useCallback(() => {
     const browserLang = navigator.language.split('-')[0] as SupportedLanguage;
     const isSupported = supportedLanguages.some(lang => lang.code === browserLang);
-    
+
     if (isSupported) {
       changeLanguage(browserLang);
       return true;
@@ -64,13 +73,13 @@ export const useLanguage = () => {
     currentLanguage,
     currentLanguageInfo,
     supportedLanguages,
-    
+
     changeLanguage,
     isLanguageActive,
     toggleLanguage,
     detectAndSetBrowserLanguage,
-    
+
     t,
-    i18n
+    i18n,
   };
 };

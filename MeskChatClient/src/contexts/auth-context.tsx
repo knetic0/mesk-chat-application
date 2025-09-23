@@ -1,90 +1,87 @@
-import { useLogoutMutation } from "@/features/commands/auth/logout/handler";
-import { useGetCurrentUserQuery } from "@/features/queries/auth/me/handler";
-import { connection } from "@/signalr";
-import type { ApplicationUser, ResponseEntityOfEmptyResponse } from "@/types";
-import { createContext, useState } from "react";
-import { TOKEN_EVENTS, type TokenClearedEvent, type TokenRefreshedEvent } from "@/token-events";
-import { useCustomEvent } from "@/hooks/use-custom-event";
+import { useLogoutMutation } from '@/features/commands/auth/logout/handler';
+import { useGetCurrentUserQuery } from '@/features/queries/auth/me/handler';
+import { connection } from '@/signalr';
+import type { ApplicationUser, ResponseEntityOfEmptyResponse } from '@/types';
+import { createContext, useState } from 'react';
+import { TOKEN_EVENTS, type TokenClearedEvent, type TokenRefreshedEvent } from '@/token-events';
+import { useCustomEvent } from '@/hooks/use-custom-event';
 
 export interface AuthContextType {
-    user: ApplicationUser | null;
-    accessToken: string | null;
-    refreshToken: string | null;
-    isAuthenticated: boolean;
-    login: (accessToken: string, refreshToken: string) => void;
-    logout: () => void;
+  user: ApplicationUser | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+  isAuthenticated: boolean;
+  login: (accessToken: string, refreshToken: string) => void;
+  logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
-    const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem("refreshToken"));
+  const [accessToken, setAccessToken] = useState<string | null>(
+    localStorage.getItem('accessToken')
+  );
+  const [refreshToken, setRefreshToken] = useState<string | null>(
+    localStorage.getItem('refreshToken')
+  );
 
-    useCustomEvent<TokenRefreshedEvent>(
-        TOKEN_EVENTS.TOKEN_REFRESHED,
-        ({ accessToken: newAccessToken, refreshToken: newRefreshToken }) => {
-            login(newAccessToken, newRefreshToken);
-        }
-    );
-
-    useCustomEvent<TokenClearedEvent>(
-        TOKEN_EVENTS.TOKEN_CLEARED,
-        () => {
-            logout();
-        }
-    );
-
-    const clearCredentials = () => {
-        setAccessToken(null);
-        setRefreshToken(null);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        if(connection.state === "Connected") {
-            connection.stop();
-        }
-        window.location.href = "/auth/login";
+  useCustomEvent<TokenRefreshedEvent>(
+    TOKEN_EVENTS.TOKEN_REFRESHED,
+    ({ accessToken: newAccessToken, refreshToken: newRefreshToken }) => {
+      login(newAccessToken, newRefreshToken);
     }
+  );
 
-    const { mutate: logoutMutation } = useLogoutMutation({
-        onSuccess: (data: ResponseEntityOfEmptyResponse) => {
-            if(data.isSuccess) {
-                clearCredentials();
-            }
-        },
-        onError: () => {
-            clearCredentials();
-        }
-    })
-    const { data: user } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
+  useCustomEvent<TokenClearedEvent>(TOKEN_EVENTS.TOKEN_CLEARED, () => {
+    logout();
+  });
 
-    const login = (accessToken: string, refreshToken: string) => {
-        setAccessToken(accessToken);
-        setRefreshToken(refreshToken);
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+  const clearCredentials = () => {
+    setAccessToken(null);
+    setRefreshToken(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    if (connection.state === 'Connected') {
+      connection.stop();
     }
+    window.location.href = '/auth/login';
+  };
 
-    const logout = () => logoutMutation({ refreshToken: refreshToken! });
+  const { mutate: logoutMutation } = useLogoutMutation({
+    onSuccess: (data: ResponseEntityOfEmptyResponse) => {
+      if (data.isSuccess) {
+        clearCredentials();
+      }
+    },
+    onError: () => {
+      clearCredentials();
+    },
+  });
+  const { data: user } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
 
-    const isAuthenticated = !!accessToken && !!refreshToken;
+  const login = (accessToken: string, refreshToken: string) => {
+    setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+  };
 
-    const value: AuthContextType = {
-        user: user?.data || null,
-        accessToken,
-        refreshToken,
-        isAuthenticated,
-        login,
-        logout,
-    }
+  const logout = () => logoutMutation({ refreshToken: refreshToken! });
 
-    return (
-        <AuthContext.Provider value={value}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+  const isAuthenticated = !!accessToken && !!refreshToken;
+
+  const value: AuthContextType = {
+    user: user?.data || null,
+    accessToken,
+    refreshToken,
+    isAuthenticated,
+    login,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};

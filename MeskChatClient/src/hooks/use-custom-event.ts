@@ -14,7 +14,7 @@ export const useCustomEvent = <T extends CustomEvent<any>>(
     };
 
     window.addEventListener(eventType, eventHandler);
-    
+
     return () => {
       window.removeEventListener(eventType, eventHandler);
     };

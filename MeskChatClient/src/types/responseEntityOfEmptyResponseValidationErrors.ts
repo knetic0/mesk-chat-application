@@ -8,4 +8,4 @@
 /**
  * @nullable
  */
-export type ResponseEntityOfEmptyResponseValidationErrors = {[key: string]: string} | null;
+export type ResponseEntityOfEmptyResponseValidationErrors = { [key: string]: string } | null;

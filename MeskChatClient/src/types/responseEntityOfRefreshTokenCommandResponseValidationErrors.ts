@@ -8,4 +8,6 @@
 /**
  * @nullable
  */
-export type ResponseEntityOfRefreshTokenCommandResponseValidationErrors = {[key: string]: string} | null;
+export type ResponseEntityOfRefreshTokenCommandResponseValidationErrors = {
+  [key: string]: string;
+} | null;
