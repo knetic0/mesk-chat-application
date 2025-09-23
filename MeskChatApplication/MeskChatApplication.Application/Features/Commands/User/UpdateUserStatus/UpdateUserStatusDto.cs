@@ -1,3 +1,5 @@
+using MeskChatApplication.Domain.Enums;
+
 namespace MeskChatApplication.Application.Features.Commands.User.UpdateUserStatus;
 
-public record UpdateUserStatusDto();
+public sealed record UpdateUserStatusDto(Status Status);

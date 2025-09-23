@@ -49,6 +49,7 @@
   "online": "Çevrimiçi",
   "offline": "Çevrimdışı",
   "unknown": "Bilinmiyor",
+  "away": "Uzakta",
   "chat": {
     "title": "Sohbet",
     "description": "Bir kullanıcı seçiniz ve sohbet başlatınız.",

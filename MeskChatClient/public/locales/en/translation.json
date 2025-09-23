@@ -49,6 +49,7 @@
   "online": "Online",
   "offline": "Offline",
   "unknown": "Unknown",
+  "away": "Away",
   "chat": {
     "title": "Chat",
     "description": "Select a user and start chatting.",

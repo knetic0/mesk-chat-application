@@ -35,7 +35,10 @@ public sealed class ChatHub(ISender sender) : Hub
             if (response.IsSuccess)
             {
                 var user = response.Data;
-                if (user is not null) await Clients.Others.SendAsync("UserStatusChanged", user);
+                if (user is not null)
+                {
+                    await Clients.Others.SendAsync("UserStatusChanged", user);
+                }
             }
         }
         await base.OnConnectedAsync();
@@ -55,7 +58,10 @@ public sealed class ChatHub(ISender sender) : Hub
                 if (response.IsSuccess)
                 {
                     var user = response.Data;
-                    if(user is not null) await Clients.Others.SendAsync("UserStatusChanged", user);
+                    if (user is not null)
+                    {
+                        await Clients.Others.SendAsync("UserStatusChanged", user);
+                    }
                 }
             }
         }
@@ -71,6 +77,20 @@ public sealed class ChatHub(ISender sender) : Hub
             await Clients.Clients(connections).SendAsync("ReceiveMessage", message);
         }
         await Clients.Caller.SendAsync("SentMessage", message);
+    }
+
+    public async Task UpdateUserStatusAsync(UpdateUserStatusDto request)
+    {
+        var senderGuid = GetCurrentUserId();
+        var response = await _sender.Send(new UpdateUserStatusCommand(senderGuid, request.Status));
+        if (response.IsSuccess)
+        {
+            var user = response.Data;
+            if (user is not null)
+            {
+                await Clients.Others.SendAsync("UserStatusChanged", user);
+            }
+        }
     }
 
     public async Task MarkAsReadAsync(MarkAsReadDto request, CancellationToken cancellationToken = default)

@@ -1,3 +1,4 @@
+import { useAwayStatus } from '@/hooks/use-away-status';
 import { useMessageHandlers } from '@/hooks/use-message-handlers';
 import { useUsersHandlers } from '@/hooks/use-users-handlers';
 import { connection } from '@/signalr';
@@ -39,6 +40,8 @@ export const SignalRProvider: React.FC<SignalRProviderProps> = ({ receiverId, ch
       connection.off('UserStatusChanged', onStatusChange);
     };
   }, [onMessageReceived, onMessageSent, onStatusChange]);
+
+  useAwayStatus();
 
   const values: SignalRContextType = {
     sendMessageAsync,
