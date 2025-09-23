@@ -48,6 +48,7 @@
     "searchUsersPlaceholder": "Search users...",
     "online": "Online",
     "offline": "Offline",
+    "unknown": "Unknown",
     "chat": {
         "title": "Chat",
         "description": "Select a user and start chatting.",

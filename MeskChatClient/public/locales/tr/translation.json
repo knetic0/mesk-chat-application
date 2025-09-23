@@ -48,6 +48,7 @@
     "searchUsersPlaceholder": "Kullanıcıları ara...",
     "online": "Çevrimiçi",
     "offline": "Çevrimdışı",
+    "unknown": "Bilinmiyor",
     "chat": {
         "title": "Sohbet",
         "description": "Bir kullanıcı seçiniz ve sohbet başlatınız.",
