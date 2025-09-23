@@ -1,17 +1,13 @@
 import { createFileRoute, Outlet, useMatchRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { Search, MoreVertical } from "lucide-react";
-import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
 import type { ApplicationUser2 } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
-import { connection } from "@/signalr";
 import { useLanguage } from "@/hooks/use-language";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { HubConnectionState } from "@microsoft/signalr";
-import { useMessageHandlers } from "@/hooks/use-message-handlers";
-import { useUsersHandlers } from "@/hooks/use-users-handlers";
 import StatusBadge from "@/components/status-badge";
+import { SignalRProvider } from "@/contexts/signalr-connection-context";
+import { useUsers } from "@/hooks/use-users";
 
 type MatchRoute = { receiverId: string };
 
@@ -26,29 +22,7 @@ function RouteComponent() {
   const matchRoute = useMatchRoute();
   const match = matchRoute({ to: "/chat/$receiverId" as const });
   const receiverId = (match as MatchRoute)?.receiverId;
-
-  const { data: users } = useGetUsersQuery();
-
-  const { onMessageReceived, onMessageSent } = useMessageHandlers(receiverId!);
-  const { onStatusChange } = useUsersHandlers();
-  
-  useEffect(() => {
-    (async () => {
-      if (connection.state !== HubConnectionState.Connected) {
-        await connection.start();
-      }
-
-      connection.on("ReceiveMessage", onMessageReceived);
-      connection.on("SentMessage", onMessageSent);
-      connection.on("UserStatusChanged", onStatusChange);
-    })();
-
-    return () => {
-      connection.off("ReceiveMessage", onMessageReceived);
-      connection.off("SentMessage", onMessageSent);
-      connection.off("UserStatusChanged", onStatusChange);
-    };
-  }, [onMessageReceived, onMessageSent, onStatusChange]);
+  const { users } = useUsers();
 
   return (
     <div className="w-full h-[650px] max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
@@ -67,7 +41,7 @@ function RouteComponent() {
           </div>
         </div>
         <ul className="flex-1 overflow-y-auto mt-2">
-          {users?.data?.map((item: ApplicationUser2) => (
+          {users?.map((item: ApplicationUser2) => (
             <li
               key={item?.id}
               className={`cursor-pointer flex items-center gap-3 px-4 py-3 hover:bg-blue-100 dark:hover:bg-slate-800 transition-all ${
@@ -123,7 +97,9 @@ function RouteComponent() {
         )}
       </div>
       <div className="flex-1 flex flex-col bg-gradient-to-br from-white via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-        <Outlet />
+        <SignalRProvider receiverId={receiverId}>
+          <Outlet />
+        </SignalRProvider>
       </div>
     </div>
   );

@@ -1,15 +1,16 @@
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Send, MoreVertical } from "lucide-react";
-import { useGetUsersQuery } from "@/features/queries/user/get-users/handler";
 import type { ApplicationUser, Message } from "@/types";
 import { useGetMessagesQuery } from "@/features/queries/chat/get-messages/handler";
-import { connection } from "@/signalr";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage } from "@/hooks/use-language";
 import StatusBadge from "@/components/status-badge";
+import { useSignalR } from "@/hooks/use-signalr";
+import { formatTime } from "@/lib/format-time";
+import { useUsers } from "@/hooks/use-users";
 
 export const Route = createFileRoute("/_auth/chat/$receiverId")({
   component: RouteComponent,
@@ -21,26 +22,18 @@ function RouteComponent() {
   const { receiverId } = useParams({ from: "/_auth/chat/$receiverId" });
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const { data: users } = useGetUsersQuery();
-  const selectedUser = users?.data?.find((u: ApplicationUser) => u?.id === receiverId);
+  const { users } = useUsers();
+  const selectedUser = users?.find((u: ApplicationUser) => u?.id === receiverId);
   const { data: messages } = useGetMessagesQuery(receiverId, { enabled: !!receiverId });
+  const { sendMessageAsync } = useSignalR();
 
-  const formatTime = (msg: Message) => {
-    if(!msg || !msg.sendAt) return "";
-    const date = new Date(msg.sendAt);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
-
-  const send = () => {
-    if (input.trim() && receiverId) {
-      const payload = {
-        receiverId: receiverId,
-        message: input.trim(),
-      };
-      connection.invoke("SendMessageAsync", payload)
-        .then(() => setInput(""))
-        .catch(err => console.error("Send message error: ", err));
-      }
+  const handleSendMessageAsync = () => {
+    sendMessageAsync(input)
+      .then((response) => {
+        if(response.success) {
+          setInput("");
+        }
+      })
   }
 
   const scrollToBottom = () => messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
@@ -98,7 +91,7 @@ function RouteComponent() {
           className="flex gap-2 items-center"
           onSubmit={(e) => {
             e.preventDefault();
-            send();
+            handleSendMessageAsync();
           }}
         >
           <Input

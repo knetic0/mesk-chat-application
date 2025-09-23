@@ -1,3 +1,4 @@
+import { UsersProvider } from '@/contexts/users-context';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth')({
@@ -6,5 +7,9 @@ export const Route = createFileRoute('/_auth')({
       throw redirect({ to: '/auth/login' });
     }
   },
-  component: () => <Outlet />,
+  component: () => (
+    <UsersProvider>
+      <Outlet />
+    </UsersProvider>
+  ),
 })

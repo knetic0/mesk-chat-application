@@ -3,8 +3,9 @@ import { useLanguage } from "./use-language";
 import { useCallback } from "react";
 import type { Message, ResponseEntityOfListOfMessage } from "@/types";
 import { toast } from "sonner";
+import { HubConnectionState, type HubConnection } from "@microsoft/signalr";
 
-export const useMessageHandlers = (receiverId: string) => {
+export const useMessageHandlers = (receiverId: string, connection: HubConnection) => {
     const queryClient = useQueryClient();
     const { t } = useLanguage();
 
@@ -37,5 +38,19 @@ export const useMessageHandlers = (receiverId: string) => {
         addMessageToCache(message);
     }, [addMessageToCache]);
 
-    return { onMessageReceived, onMessageSent };
+    const sendMessageAsync = useCallback(async (message: string) => {
+        const _message = message?.trim();
+        if(!_message) return { success: false, message: "Empty Message!" };
+        if(!receiverId) return { success: false, message: "Invalid receiver!"};
+        if(connection.state !== HubConnectionState.Connected) return { success: false, message: "Check your connection!"};
+        const payload = { receiverId, message };
+        try {
+            await connection.send("SendMessageAsync", payload);
+            return { success: true, message: "Message sended!"};
+        } catch(error) {
+            return { success: false, message: "Something went wrong while sending message!"};
+        }
+    }, [receiverId, connection])
+
+    return { onMessageReceived, onMessageSent, sendMessageAsync };
 }
