@@ -62,7 +62,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       clearCredentials();
     },
   });
-  const { data: user, isPending } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
+  const { data: user, isPending } = useGetCurrentUserQuery({
+    enabled: !!accessToken && !!refreshToken,
+  });
 
   const login = (accessToken: string, refreshToken: string) => {
     setAccessToken(accessToken);

@@ -4,6 +4,7 @@ import { createContext } from 'react';
 
 interface UsersContextType {
   users: ApplicationUser2[];
+  isPending: boolean;
 }
 
 export const UsersContext = createContext<UsersContextType | undefined>(undefined);
@@ -13,11 +14,12 @@ interface UsersProviderProps {
 }
 
 export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
-  const { data } = useGetUsersQuery();
+  const { data, isPending } = useGetUsersQuery();
   const users = data?.data!;
 
   const values = {
     users,
+    isPending,
   };
 
   return <UsersContext.Provider value={values}>{children}</UsersContext.Provider>;
