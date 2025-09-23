@@ -5,6 +5,7 @@ import type { ApplicationUser, ResponseEntityOfEmptyResponse } from '@/types';
 import { createContext, useState } from 'react';
 import { TOKEN_EVENTS, type TokenClearedEvent, type TokenRefreshedEvent } from '@/token-events';
 import { useCustomEvent } from '@/hooks/use-custom-event';
+import { HubConnectionState } from '@microsoft/signalr';
 
 export interface AuthContextType {
   user: ApplicationUser | null;
@@ -45,7 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setRefreshToken(null);
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    if (connection.state === 'Connected') {
+    if (connection.state === HubConnectionState.Connected) {
       connection.stop();
     }
     window.location.href = '/auth/login';
@@ -61,7 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       clearCredentials();
     },
   });
-  const { data: user } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
+  const { data: user, isPending } = useGetCurrentUserQuery({ enabled: !!accessToken && !!refreshToken });
 
   const login = (accessToken: string, refreshToken: string) => {
     setAccessToken(accessToken);
@@ -72,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => logoutMutation({ refreshToken: refreshToken! });
 
-  const isAuthenticated = !!accessToken && !!refreshToken;
+  const isAuthenticated = !!accessToken && !!refreshToken && (isPending || !!user?.data);
 
   const value: AuthContextType = {
     user: user?.data || null,
