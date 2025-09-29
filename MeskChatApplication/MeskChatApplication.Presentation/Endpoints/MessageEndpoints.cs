@@ -4,11 +4,11 @@ using MESK.MiniEndpoint;
 using MESK.ResponseEntity;
 using MeskChatApplication.Application.Features.Queries.Messages.GetAll;
 using MeskChatApplication.Domain.Entities;
+using MeskChatApplication.Presentation.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using UnauthorizedAccessException = MeskChatApplication.Application.Exceptions.UnauthorizedAccessException;
 
 namespace MeskChatApplication.Presentation.Endpoints;
 
@@ -22,8 +22,7 @@ public sealed class MessageEndpoints : IEndpoint
                 async ([FromQuery] Guid receiverId, ClaimsPrincipal user, [FromServices] ISender sender,
                     CancellationToken cancellationToken) =>
                 {
-                    if (!Guid.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var senderId))
-                        throw new UnauthorizedAccessException();
+                    var senderId = user.GetNameIdentifier();
                     var messages = await sender.Send(new GetAllMessagesQuery(senderId, receiverId), cancellationToken);
                     return messages;
                 })

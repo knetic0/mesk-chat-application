@@ -5,6 +5,7 @@ using MeskChatApplication.Application.Features.Commands.Messages.MarkAsRead;
 using MeskChatApplication.Application.Features.Commands.Messages.SendMessage;
 using MeskChatApplication.Application.Features.Commands.User.UpdateUserStatus;
 using MeskChatApplication.Domain.Enums;
+using MeskChatApplication.Presentation.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using UnauthorizedAccessException = MeskChatApplication.Application.Exceptions.UnauthorizedAccessException;
@@ -98,13 +99,12 @@ public sealed class ChatHub(ISender sender) : Hub
         var senderGuid = GetCurrentUserId();
         var message = await _sender.Send(new MarkAsReadCommand(request.MessageId, senderGuid), cancellationToken);
         await Clients.Caller.SendAsync("MessageMarkedAsRead", message, cancellationToken);
-        await Clients.User(message.SenderId.ToString()).SendAsync("MessageReadByReceiver", message, cancellationToken);
+        await Clients.User(senderGuid.ToString()).SendAsync("MessageReadByReceiver", message, cancellationToken);
     }
 
     private Guid GetCurrentUserId()
     {
-        var senderId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!Guid.TryParse(senderId, out var senderGuid)) throw new UnauthorizedAccessException();
-        return senderGuid;
+        if(Context.User is null) throw new UnauthorizedAccessException();
+        return Context.User.GetNameIdentifier();
     }
 }

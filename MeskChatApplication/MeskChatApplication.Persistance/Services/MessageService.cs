@@ -29,7 +29,7 @@ public sealed class MessageService(IMessageRepository messageRepository) : IMess
         await _messageRepository.CreateAsync(message, cancellationToken);
     }
 
-    public void MarkAsRead(Message message, CancellationToken cancellationToken)
+    public void MarkAsRead(Message message)
     {
         message.MarkAsRead();
         _messageRepository.Update(message);

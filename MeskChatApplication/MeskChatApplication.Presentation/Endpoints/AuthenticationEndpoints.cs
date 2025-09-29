@@ -10,11 +10,11 @@ using MeskChatApplication.Application.Features.Commands.Authentication.Register;
 using MeskChatApplication.Application.Features.Commands.Authentication.ResetPassword;
 using MeskChatApplication.Application.Features.Queries.Authentication.Me;
 using MeskChatApplication.Domain.Dtos;
+using MeskChatApplication.Presentation.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using UnauthorizedAccessException = MeskChatApplication.Application.Exceptions.UnauthorizedAccessException;
 
 namespace MeskChatApplication.Presentation.Endpoints;
 
@@ -43,9 +43,8 @@ public sealed class AuthenticationEndpoints : IEndpoint
 
         group.MapGet("/me", async (ClaimsPrincipal user, ISender sender, CancellationToken cancellationToken) =>
         {
-            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId is null) throw new UnauthorizedAccessException();
-            var response = await sender.Send(new GetCurrentUserQuery(Guid.Parse(userId)), cancellationToken);
+            var userId = user.GetNameIdentifier();
+            var response = await sender.Send(new GetCurrentUserQuery(userId), cancellationToken);
             return Results.Ok(response);
         })
         .RequireAuthorization()
