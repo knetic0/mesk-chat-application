@@ -44,4 +44,10 @@ public sealed class UserService(IUserRepository userRepository) : IUserService
         user.SetStatus(status);
         Update(user);
     }
+
+    public void UpdateProfilePhoto(User user, string photoUrl)
+    {
+        user.ProfilePhotoUrl = photoUrl;
+        Update(user);
+    }
 }

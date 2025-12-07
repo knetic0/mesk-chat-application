@@ -13,4 +13,5 @@ public interface IUserService
     void Update(User user);
     void UpdatePassword(User user, byte[] passwordHash, byte[] passwordSalt);
     void UpdateUserStatus(User user, Status status);
+    void UpdateProfilePhoto(User user, string photoUrl);
 }

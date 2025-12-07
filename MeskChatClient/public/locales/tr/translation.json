@@ -55,5 +55,8 @@
     "description": "Bir kullanıcı seçiniz ve sohbet başlatınız.",
     "writeMessage": "Bir mesaj yazın...",
     "messageNotification": "{{firstName}} {{lastName}} size yeni bir mesaj gönderdi"
-  }
+  },
+  "profilePhoto": "Profil Fotoğrafı",
+  "loading": "Yükleniyor...",
+  "clickToChangePhoto": "Fotoğrafı değiştirmek için tıklayın"
 }

@@ -19,6 +19,7 @@ public class AutofacBusinessModule : Module
         builder.RegisterType<MessageRepository>().As<IMessageRepository>().InstancePerLifetimeScope();
         
         builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
+        builder.RegisterType<FileStorageService>().As<IFileStorageService>().InstancePerLifetimeScope();
         
         builder.RegisterType<RefreshTokenService>().As<IRefreshTokenService>().InstancePerLifetimeScope();
         builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();

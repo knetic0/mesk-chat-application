@@ -9,6 +9,7 @@ import type {
   GetApiV1MessagesParams,
   LoginCommand,
   LogoutCommand,
+  PutApiV1UsersUpdateProfilePhotoBody,
   RefreshTokenCommand,
   RegisterCommand,
   ResetPasswordCommand,
@@ -18,6 +19,7 @@ import type {
   ResponseEntityOfListOfMessage,
   ResponseEntityOfLoginCommandResponse,
   ResponseEntityOfRefreshTokenCommandResponse,
+  ResponseEntityOfstring,
 } from '../types';
 
 import { axiosInstance } from '../axios';
@@ -98,6 +100,20 @@ export const getMeskChatApplicationWebApiV1 = () => {
     });
   };
 
+  const putApiV1UsersUpdateProfilePhoto = (
+    putApiV1UsersUpdateProfilePhotoBody: PutApiV1UsersUpdateProfilePhotoBody
+  ) => {
+    const formData = new FormData();
+    formData.append(`photo`, putApiV1UsersUpdateProfilePhotoBody.photo);
+
+    return axiosInstance<ResponseEntityOfstring>({
+      url: `/api/v1/users/update-profile-photo`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
+    });
+  };
+
   return {
     postApiV1AuthenticationLogin,
     postApiV1AuthenticationRegister,
@@ -108,6 +124,7 @@ export const getMeskChatApplicationWebApiV1 = () => {
     postApiV1AuthenticationResetPassword,
     getApiV1Messages,
     getApiV1Users,
+    putApiV1UsersUpdateProfilePhoto,
   };
 };
 export type PostApiV1AuthenticationLoginResult = NonNullable<
@@ -154,4 +171,9 @@ export type GetApiV1MessagesResult = NonNullable<
 >;
 export type GetApiV1UsersResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['getApiV1Users']>>
+>;
+export type PutApiV1UsersUpdateProfilePhotoResult = NonNullable<
+  Awaited<
+    ReturnType<ReturnType<typeof getMeskChatApplicationWebApiV1>['putApiV1UsersUpdateProfilePhoto']>
+  >
 >;

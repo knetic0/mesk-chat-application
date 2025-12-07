@@ -11,6 +11,7 @@ import StatusBadge from '@/components/status-badge';
 import { useSignalR } from '@/hooks/use-signalr';
 import { formatTime } from '@/lib/format-time';
 import { useUsers } from '@/hooks/use-users';
+import { getProfilePhoto } from '@/lib/get-profile-photo';
 
 export const Route = createFileRoute('/_auth/chat/$receiverId')({
   component: RouteComponent,
@@ -42,7 +43,7 @@ function RouteComponent() {
     <>
       <div className="flex items-center gap-3 p-4 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
         <img
-          src={'https://randomuser.me/api/portraits/men/3.jpg'}
+          src={getProfilePhoto(selectedUser!)}
           alt="avatar"
           className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-slate-700"
         />

@@ -9,6 +9,11 @@ import StatusBadge from '@/components/status-badge';
 import { SignalRProvider } from '@/contexts/signalr-connection-context';
 import { useUsers } from '@/hooks/use-users';
 import UsersSkeletonLoader from '@/components/users-skeleton-loader';
+import { getProfilePhoto } from '@/lib/get-profile-photo';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Label } from '@/components/ui/label';
+import { useUpdateProfilePhotoMutation } from '@/features/commands/user/update-photo/handler';
+import { useQueryClient } from '@tanstack/react-query';
 
 type MatchRoute = { receiverId: string };
 
@@ -24,6 +29,24 @@ function RouteComponent() {
   const match = matchRoute({ to: '/chat/$receiverId' as const });
   const receiverId = (match as MatchRoute)?.receiverId;
   const { users, isPending } = useUsers();
+  
+  const queryClient = useQueryClient();
+  const {
+    mutate: handlePhotoUpload,
+    isPending: isPhotoUploading,
+  } = useUpdateProfilePhotoMutation({
+    onSuccess: (data) => {
+      queryClient.setQueryData(['currentUser'], (oldData: any) => {
+        return {
+          ...oldData,
+          data: {
+            ...oldData?.data,
+            profilePhotoUrl: data.data,
+          },
+        };
+      });
+    }
+  });
 
   return (
     <div className="w-full h-[650px] max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl flex overflow-hidden border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
@@ -61,7 +84,7 @@ function RouteComponent() {
                 }
               >
                 <img
-                  src={'https://randomuser.me/api/portraits/men/3.jpg'}
+                  src={getProfilePhoto(item)}
                   alt={item?.id}
                   className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-slate-700"
                 />
@@ -77,11 +100,44 @@ function RouteComponent() {
         {user && (
           <div className="p-4 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img
-                src={'https://randomuser.me/api/portraits/men/5.jpg'}
-                alt={user?.id}
-                className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-slate-700"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <img
+                    src={getProfilePhoto(user)}
+                    className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-slate-700 cursor-pointer"
+                  />
+                </PopoverTrigger>
+                <PopoverContent className="w-80 bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700">
+                  <div className="flex flex-col items-center gap-4">
+                    <Label htmlFor="picture" className="text-gray-700 dark:text-gray-200">
+                      {t("profilePhoto")}
+                    </Label>
+                    <input
+                      id="picture"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handlePhotoUpload(file);
+                        }
+                      }}
+                      disabled={isPhotoUploading}
+                    />
+                    <label htmlFor="picture" className="cursor-pointer">
+                      <img
+                        src={getProfilePhoto(user)}
+                        className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 dark:border-slate-600 hover:opacity-80 transition-opacity"
+                        alt="Profile"
+                      />
+                    </label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                      {isPhotoUploading ? t("loading") : t("clickToChangePhoto")}
+                    </p>
+                  </div>
+                </PopoverContent>
+              </Popover>
               <div>
                 <div className="font-medium text-base">
                   {user.firstName} {user.lastName}

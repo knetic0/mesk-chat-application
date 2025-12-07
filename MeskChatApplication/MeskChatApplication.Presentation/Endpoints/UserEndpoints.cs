@@ -2,6 +2,7 @@ using System.Security.Claims;
 using MESK.MediatR;
 using MESK.MiniEndpoint;
 using MESK.ResponseEntity;
+using MeskChatApplication.Application.Features.Commands.User.UpdateProfilePhoto;
 using MeskChatApplication.Application.Features.Queries.Users.GetAll;
 using MeskChatApplication.Domain.Dtos;
 using MeskChatApplication.Presentation.Extensions;
@@ -26,5 +27,18 @@ public sealed class UserEndpoints : IEndpoint
         .RequireAuthorization()
         .Produces<ResponseEntity<List<ApplicationUser>>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
+
+        group.MapPut("/update-profile-photo", async (ClaimsPrincipal user, [FromServices] ISender sender,
+            [FromForm] IFormFile photo, CancellationToken cancellationToken) =>
+        {
+            var userId = user.GetNameIdentifier();
+            await using var stream = photo.OpenReadStream();
+            return await sender.Send(new UpdateProfilePhotoCommand(stream, userId), cancellationToken);
+        })
+        .RequireAuthorization()
+        .DisableAntiforgery()
+        .Produces<ResponseEntity<string>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status400BadRequest);
     }
 }

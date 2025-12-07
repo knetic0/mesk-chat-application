@@ -30,6 +30,8 @@ public sealed class User : Entity
     public Status? Status { get; set; } = Enums.Status.Offline;
     public DateTime? LastOnlineAt { get; init; }
     
+    public string? ProfilePhotoUrl { get; set; }
+    
     public ICollection<RefreshToken> RefreshTokens { get; init; } = new List<RefreshToken>();
     public ICollection<PasswordResetToken> PasswordResetTokens { get; init; } = new List<PasswordResetToken>();
     

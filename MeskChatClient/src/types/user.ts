@@ -30,6 +30,8 @@ export interface User {
   status?: NullableOfStatus;
   /** @nullable */
   lastOnlineAt?: string | null;
+  /** @nullable */
+  profilePhotoUrl?: string | null;
   refreshTokens?: RefreshToken[];
   passwordResetTokens?: PasswordResetToken[];
   id?: string;

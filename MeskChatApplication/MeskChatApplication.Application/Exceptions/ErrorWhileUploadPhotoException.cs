@@ -1,6 +1,8 @@
+using System.Net;
+
 namespace MeskChatApplication.Application.Exceptions;
 
-public class ErrorWhileUploadPhotoException
+public class ErrorWhileUploadPhotoException() : ApplicationLogicBaseException("Invalid Email or Password!")
 {
-    
+    public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
 }

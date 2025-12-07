@@ -15,4 +15,5 @@ export interface ApplicationUser2 {
   status: Status;
   /** @nullable */
   lastOnlineAt: string | null;
+  profilePhotoUrl: string;
 }

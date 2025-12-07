@@ -11,6 +11,7 @@ using MeskChatApplication.WebApi.DependencyInjection;
 using MeskChatApplication.WebApi.Extensions;
 using MeskChatApplication.WebApi.Middlewares;
 using MeskChatApplication.WebApi.Options.ApplicationSetup;
+using MeskChatApplication.WebApi.Options.CloudinarySetup;
 using MeskChatApplication.WebApi.Options.EmailSetup;
 using MeskChatApplication.WebApi.Options.JwtSetup;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -47,6 +48,7 @@ builder.Services.ConfigureOptions<JwtOptionsSetup>();
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
 builder.Services.ConfigureOptions<EmailOptionsSetup>();
 builder.Services.ConfigureOptions<ApplicationOptionsSetup>();
+builder.Services.ConfigureOptions<CloudinaryOptionsSetup>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDatabaseContext>(opts =>

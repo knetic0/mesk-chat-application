@@ -55,5 +55,8 @@
     "description": "Select a user and start chatting.",
     "writeMessage": "Write a message...",
     "messageNotification": "{{firstName}} {{lastName}} sent you a new message"
-  }
+  },
+  "profilePhoto": "Profile Photo",
+  "loading": "Loading...",
+  "clickToChangePhoto": "Click to change photo"
 }

@@ -18,4 +18,5 @@ export type ApplicationUser = {
   status: Status;
   /** @nullable */
   lastOnlineAt: string | null;
+  profilePhotoUrl: string;
 } | null;
