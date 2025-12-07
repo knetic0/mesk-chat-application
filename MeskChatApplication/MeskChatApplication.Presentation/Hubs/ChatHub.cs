@@ -73,7 +73,7 @@ public sealed class ChatHub(ISender sender) : Hub
     {
         var senderGuid = GetCurrentUserId();
         var message = await _sender.Send(new SendMessageCommand(senderGuid, request.ReceiverId, request.Message));
-        if (UserConnections.TryGetValue(request.ReceiverId, out var connections) && connections.Count > 0)
+        if (TryGetActiveConnections(request.ReceiverId, out var connections))
         {
             await Clients.Clients(connections).SendAsync("ReceiveMessage", message);
         }
@@ -94,6 +94,7 @@ public sealed class ChatHub(ISender sender) : Hub
         }
     }
 
+    // TODO
     public async Task MarkAsReadAsync(MarkAsReadDto request, CancellationToken cancellationToken = default)
     {
         var senderGuid = GetCurrentUserId();
@@ -102,9 +103,47 @@ public sealed class ChatHub(ISender sender) : Hub
         await Clients.User(senderGuid.ToString()).SendAsync("MessageReadByReceiver", message, cancellationToken);
     }
 
+    # region Video Call Communication
+    public async Task SendVideoCallOfferAsync(string receiverId, string offer)
+        => await VideoCallCommunicationSenderAsync(receiverId, "ReceiveVideoCallOffer", offer);
+
+    public async Task SendAnswerVideoCallOfferAsync(string receiverId, string answer)
+        => await VideoCallCommunicationSenderAsync(receiverId, "ReceiveVideoCallAnswer", answer);
+
+    public async Task SendIceCandidateVideoCallAsync(string receiverId, string candidate)
+        => await VideoCallCommunicationSenderAsync(receiverId, "ReceiveIceCandidate", candidate);
+
+    private async Task VideoCallCommunicationSenderAsync(string receiverId, string method, string message)
+    {
+        if (Guid.TryParse(receiverId, out var receiverGuid))
+        {
+            if (TryGetActiveConnections(receiverGuid, out var connections))
+            {
+                var senderId = GetCurrentUserId();
+                await Clients.Clients(connections).SendAsync(method, senderId.ToString(), message);
+            }
+        }
+    }
+    #endregion
+
+    # region Helpers Private Methods
+    private static bool TryGetActiveConnections(Guid receiverId, out HashSet<string> connections)
+    {
+        connections = [];
+        
+        if (UserConnections.TryGetValue(receiverId, out var list) && list.Count > 0)
+        {
+            connections = list;
+            return true;
+        }
+
+        return false;
+    }
+
     private Guid GetCurrentUserId()
     {
         if(Context.User is null) throw new UnauthorizedAccessException();
         return Context.User.GetNameIdentifier();
     }
+    #endregion
 }

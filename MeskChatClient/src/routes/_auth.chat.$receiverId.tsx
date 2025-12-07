@@ -62,11 +62,10 @@ function RouteComponent() {
             <div key={msg.id ?? idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-md flex flex-col ${isMine ? 'items-end' : 'items-start'}`}>
                 <div
-                  className={`px-5 py-3 rounded-2xl shadow-sm ${
-                    isMine
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white dark:bg-slate-800 text-gray-900 dark:text-white'
-                  }`}
+                  className={`px-5 py-3 rounded-2xl shadow-sm ${isMine
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white dark:bg-slate-800 text-gray-900 dark:text-white'
+                    }`}
                 >
                   <span className="block text-base">{msg.text}</span>
                 </div>
