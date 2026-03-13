@@ -1,5 +1,7 @@
+using System.Data;
 using MeskChatApplication.Application.Services;
 using MeskChatApplication.Persistance.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace MeskChatApplication.Persistance.Services;
@@ -14,10 +16,10 @@ public sealed class UnitOfWork(ApplicationDatabaseContext context) : IUnitOfWork
         return await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
     {
         if(_transaction is not null) throw new InvalidOperationException("Transaction has already been started.");
-        _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        _transaction = await _context.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
     }
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)

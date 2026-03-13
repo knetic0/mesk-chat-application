@@ -15,8 +15,9 @@ public sealed class TransactionBehavior<TRequest, TResponse>(IUnitOfWork unitOfW
     {
         var handlerType = typeof(IRequestHandler<TRequest, TResponse>);
         var concreteHandlerType = _serviceProvider.GetService(handlerType)?.GetType();
-        if(concreteHandlerType?.GetCustomAttribute<TransactionalAttribute>() is null) return await next();
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        var attr = concreteHandlerType?.GetCustomAttribute<TransactionalAttribute>();
+        if(attr is null) return await next();
+        await _unitOfWork.BeginTransactionAsync(attr.IsolationLevel, cancellationToken);
         try
         {
             var response = await next();
